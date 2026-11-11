@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+revision_outputs/
+*.pt
+*.npz

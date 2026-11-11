@@ -1,0 +1,9 @@
+# Kaggle images already include all of these.
+numpy
+pandas
+scipy
+scikit-learn
+opencv-python-headless
+pillow
+torch
+torchvision
