@@ -1,5 +1,5 @@
 {
- "hf_repo": "REPLACE-WITH-HF-USER/REPLACE-WITH-REPO",
+ "hf_repo": "nihal4/lgpm-thyroid-artifacts",
  "url_template": "https://huggingface.co/{hf_repo}/resolve/main/{name}",
  "files": [
   {
