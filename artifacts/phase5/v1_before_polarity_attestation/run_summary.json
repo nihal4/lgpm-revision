@@ -1,0 +1,263 @@
+{
+  "phase": "5 - ThyUS2Path case-level external (audit-gated family J)",
+  "seed": 42,
+  "device": "cuda",
+  "protocol": {
+    "IMG_SIZE": 384,
+    "PRED_THRESH": 0.5,
+    "SEG_K": 20,
+    "RING_PX": 15,
+    "FEAT_SCALES": [
+      "e3",
+      "e4"
+    ],
+    "N_BOOT_J": 5000,
+    "ALPHA_J": 0.0125,
+    "PREV_LO": 0.2,
+    "PREV_HI": 0.85,
+    "MIN_USABLE": 300,
+    "no_refit": true,
+    "joint_lineage_tol": 1e-06
+  },
+  "audit": {
+    "root": "/kaggle/input/datasets/jonbon8397/thyus2path",
+    "label_files": {
+      "batch1_image_label.csv": {
+        "id_col": "patient_name",
+        "lab_col": "histo_label",
+        "lab_map": {
+          "1": 1,
+          "0": 0
+        }
+      },
+      "batch2_image_label.csv": {
+        "id_col": "patient_name",
+        "lab_col": "histo_label",
+        "lab_map": {
+          "1": 1,
+          "0": 0
+        }
+      }
+    },
+    "batch_coverage": [
+      {
+        "file": "batch1_image_label.csv",
+        "batch": "batch1_image",
+        "pool": 6005,
+        "labelled": 6005,
+        "coverage": 1.0
+      },
+      {
+        "file": "batch2_image_label.csv",
+        "batch": "batch2_image",
+        "pool": 2503,
+        "labelled": 2495,
+        "coverage": 0.9968
+      }
+    ],
+    "A1_parse_rate": 0.999059708509638,
+    "A2_images_in": 8500,
+    "A2_unique_cases": 842,
+    "A3_excluded_cases": 3,
+    "A4_prevalence": 0.6221692491060786,
+    "A1_OK": true,
+    "A4_OK": true,
+    "POLARITY_VERIFIED": false,
+    "AUDIT_OK": true,
+    "INFERENCE_LICENSE": false,
+    "n_final": 839,
+    "n_images_final": 8465,
+    "unit": "case (score = mean of per-image calibrated probabilities)",
+    "amendment": "2026-08-22 pre-inference: A1b two-table per-batch prefix join; batch-namespaced case ids; case-mean primary unit; conservative whole-case overlap exclusion"
+  },
+  "gates": {
+    "erm_sanity": 0.940053677407763,
+    "r1p_integrity": 0.888916962846924,
+    "joint_lineage_ok": true
+  },
+  "cohort": {
+    "unit": "case (mean of per-image calibrated probs)",
+    "n_cases": 839,
+    "malignant_cases": 522,
+    "prevalence_case": 0.6221692491060786,
+    "n_images": 8465,
+    "per_batch_cases": {
+      "batch1_image": 598,
+      "batch2_image": 241
+    }
+  },
+  "amendments": [
+    "2026-08-22 pre-inference audit amendment: A1b two-table per-batch prefix join (batch-namespaced case ids)",
+    "primary unit = case-mean of per-image calibrated probs; first-sorted image per case = descriptive sensitivity",
+    "conservative whole-case overlap exclusion (A3)"
+  ],
+  "seg_qc": {
+    "frozen": {
+      "dice_mean": NaN,
+      "empty_rate": 1.7471698113207548,
+      "area_mean": 0.04076113924384117,
+      "conf_mean": 0.04126245155930519,
+      "has_gt_masks": false
+    },
+    "joint_g": {
+      "dice_mean": NaN,
+      "empty_rate": 0.5528301886792453,
+      "area_mean": 0.059409585966543575
+    },
+    "joint_img": {
+      "dice_mean": NaN,
+      "empty_rate": 0.0,
+      "area_mean": NaN
+    }
+  },
+  "main_table": [
+    {
+      "model": "ERM",
+      "auroc": 0.5479,
+      "auroc_CI": "(0.5082-0.5868)",
+      "auprc": 0.6662,
+      "sens@spec90": 0.0134,
+      "brier": 0.2873,
+      "ece_pre": 0.2813,
+      "ece_post": 0.2145,
+      "T_srcval": 1.969
+    },
+    {
+      "model": "R0_image",
+      "auroc": 0.54,
+      "auroc_CI": "(0.4992-0.5791)",
+      "auprc": 0.6408,
+      "sens@spec90": 0.046,
+      "brier": 0.3486,
+      "ece_pre": 0.3039,
+      "ece_post": 0.3139,
+      "T_srcval": 0.927
+    },
+    {
+      "model": "R1p_lesion",
+      "auroc": 0.5081,
+      "auroc_CI": "(0.4686-0.5494)",
+      "auprc": 0.63,
+      "sens@spec90": 0.159,
+      "brier": 0.3423,
+      "ece_pre": 0.2761,
+      "ece_post": 0.2942,
+      "T_srcval": 0.847
+    },
+    {
+      "model": "R2p_lesion_ring",
+      "auroc": 0.5211,
+      "auroc_CI": "(0.4805-0.5619)",
+      "auprc": 0.6392,
+      "sens@spec90": 0.0881,
+      "brier": 0.3337,
+      "ece_pre": 0.2771,
+      "ece_post": 0.2852,
+      "T_srcval": 0.927
+    },
+    {
+      "model": "JOINT-g",
+      "auroc": 0.5112,
+      "auroc_CI": "(0.4715-0.5506)",
+      "auprc": 0.6342,
+      "sens@spec90": 0.0613,
+      "brier": 0.32,
+      "ece_pre": 0.202,
+      "ece_post": 0.2607,
+      "T_srcval": 0.523
+    },
+    {
+      "model": "JOINT-img",
+      "auroc": 0.478,
+      "auroc_CI": "(0.4387-0.5201)",
+      "auprc": 0.6078,
+      "sens@spec90": 0.0153,
+      "brier": 0.3198,
+      "ece_pre": 0.1506,
+      "ece_post": 0.2738,
+      "T_srcval": 0.2
+    }
+  ],
+  "firstimage_sensitivity": [
+    {
+      "model": "ERM",
+      "auroc_first_image": 0.5328,
+      "sens@spec90_first_image": 0.1648
+    },
+    {
+      "model": "R0_image",
+      "auroc_first_image": 0.5006,
+      "sens@spec90_first_image": 0.1475
+    },
+    {
+      "model": "R1p_lesion",
+      "auroc_first_image": 0.4877,
+      "sens@spec90_first_image": 0.2375
+    },
+    {
+      "model": "R2p_lesion_ring",
+      "auroc_first_image": 0.4965,
+      "sens@spec90_first_image": 0.2069
+    },
+    {
+      "model": "JOINT-g",
+      "auroc_first_image": 0.4813,
+      "sens@spec90_first_image": 0.1743
+    },
+    {
+      "model": "JOINT-img",
+      "auroc_first_image": 0.4974,
+      "sens@spec90_first_image": 0.0632
+    }
+  ],
+  "familyJ": [
+    {
+      "test": "J1",
+      "metric": "sens@spec90",
+      "A": "R1p_lesion",
+      "B": "ERM",
+      "delta(A-B)": 0.1457,
+      "CI95": "(0.1149..0.1782)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "WITHHELD",
+      "n_boot": 5000,
+      "note": "PRIMARY external operating point (replication)"
+    },
+    {
+      "test": "J2",
+      "metric": "AUROC",
+      "A": "R1p_lesion",
+      "B": "ERM",
+      "delta(A-B)": -0.0401,
+      "CI95": "(-0.0801..-0.0015)",
+      "p_two_sided": 0.0436,
+      "sig_bonf": "WITHHELD",
+      "n_boot": 5000,
+      "note": "rank transfer (secondary)"
+    },
+    {
+      "test": "J3",
+      "metric": "sens@spec90",
+      "A": "JOINT-g",
+      "B": "R1p_lesion",
+      "delta(A-B)": -0.0978,
+      "CI95": "(-0.1264..-0.0709)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "WITHHELD",
+      "n_boot": 5000,
+      "note": "joint vs frozen grounding, external (H2 analogue)"
+    },
+    {
+      "test": "J4",
+      "metric": "AUROC",
+      "A": "R1p_lesion",
+      "B": "R0_image",
+      "delta(A-B)": -0.0322,
+      "CI95": "(-0.0709..0.0075)",
+      "p_two_sided": 0.1104,
+      "sig_bonf": "WITHHELD",
+      "n_boot": 5000,
+      "note": "grounding over whole image, external"
+    }
+  ]
+}

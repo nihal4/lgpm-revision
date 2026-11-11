@@ -5,16 +5,16 @@
       "id_col": "patient_name",
       "lab_col": "histo_label",
       "lab_map": {
-        "1": 1,
-        "0": 0
+        "0": 0,
+        "1": 1
       }
     },
     "batch2_image_label.csv": {
       "id_col": "patient_name",
       "lab_col": "histo_label",
       "lab_map": {
-        "1": 1,
-        "0": 0
+        "0": 0,
+        "1": 1
       }
     }
   },
@@ -41,9 +41,9 @@
   "A4_prevalence": 0.6221692491060786,
   "A1_OK": true,
   "A4_OK": true,
-  "POLARITY_VERIFIED": false,
+  "POLARITY_VERIFIED": true,
   "AUDIT_OK": true,
-  "INFERENCE_LICENSE": false,
+  "INFERENCE_LICENSE": true,
   "n_final": 839,
   "n_images_final": 8465,
   "unit": "case (score = mean of per-image calibrated probabilities)",

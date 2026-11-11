@@ -1,0 +1,51 @@
+{
+  "root": "/kaggle/input/datasets/jonbon8397/thyus2path",
+  "label_files": {
+    "batch1_image_label.csv": {
+      "id_col": "patient_name",
+      "lab_col": "histo_label",
+      "lab_map": {
+        "1": 1,
+        "0": 0
+      }
+    },
+    "batch2_image_label.csv": {
+      "id_col": "patient_name",
+      "lab_col": "histo_label",
+      "lab_map": {
+        "1": 1,
+        "0": 0
+      }
+    }
+  },
+  "batch_coverage": [
+    {
+      "file": "batch1_image_label.csv",
+      "batch": "batch1_image",
+      "pool": 6005,
+      "labelled": 6005,
+      "coverage": 1.0
+    },
+    {
+      "file": "batch2_image_label.csv",
+      "batch": "batch2_image",
+      "pool": 2503,
+      "labelled": 2495,
+      "coverage": 0.9968
+    }
+  ],
+  "A1_parse_rate": 0.999059708509638,
+  "A2_images_in": 8500,
+  "A2_unique_cases": 842,
+  "A3_excluded_cases": 3,
+  "A4_prevalence": 0.6221692491060786,
+  "A1_OK": true,
+  "A4_OK": true,
+  "POLARITY_VERIFIED": false,
+  "AUDIT_OK": true,
+  "INFERENCE_LICENSE": false,
+  "n_final": 839,
+  "n_images_final": 8465,
+  "unit": "case (score = mean of per-image calibrated probabilities)",
+  "amendment": "2026-08-22 pre-inference: A1b two-table per-batch prefix join; batch-namespaced case ids; case-mean primary unit; conservative whole-case overlap exclusion"
+}

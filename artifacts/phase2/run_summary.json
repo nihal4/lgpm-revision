@@ -1,0 +1,473 @@
+{
+  "phase": "2 - support-conditioned prototype segmentation",
+  "seed": 42,
+  "device": "cuda",
+  "checkpoint": "/kaggle/input/datasets/smnihalahmed/thyroid-phase1-results/best_resnet34_seed42.pt",
+  "config": {
+    "K_LIST": [
+      1,
+      5,
+      10,
+      20
+    ],
+    "Q_QUERY": 8,
+    "N_EP_EVAL": 200,
+    "scales": [
+      "e2",
+      "e3",
+      "e4"
+    ],
+    "score_hw": 48,
+    "decoder_epochs_max": 30,
+    "pred_thresh": 0.5
+  },
+  "decoder_best_val_dice": 0.777577767556123,
+  "decoder_best_epoch": 13,
+  "supervised_reference_TTA": {
+    "TN3K test (in-domain)": 0.8466,
+    "TNUI-2021 test (ext)": 0.7464,
+    "DDTI (ext)": 0.7396
+  },
+  "summary": [
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "1",
+      "variant": "decoder",
+      "dice": "0.7585494040819657",
+      "dice_lo": "0.7477485981080405",
+      "dice_hi": "0.7693593006366444",
+      "iou": "0.6482189177044633",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "1",
+      "variant": "direct",
+      "dice": "0.6204559450405115",
+      "dice_lo": "0.598714091099773",
+      "dice_hi": "0.6431682011192943",
+      "iou": "0.505606735473005",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "5",
+      "variant": "decoder",
+      "dice": "0.7889089273390948",
+      "dice_lo": "0.7805915954594771",
+      "dice_hi": "0.7973509664270628",
+      "iou": "0.6827438891378063",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "5",
+      "variant": "direct",
+      "dice": "0.6778340223846154",
+      "dice_lo": "0.6642462426064327",
+      "dice_hi": "0.6910661852288085",
+      "iou": "0.5625422298281397",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "10",
+      "variant": "decoder",
+      "dice": "0.7904970329824996",
+      "dice_lo": "0.7822339690233924",
+      "dice_hi": "0.7987351567672736",
+      "iou": "0.6848573879762989",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "10",
+      "variant": "direct",
+      "dice": "0.6788402287519514",
+      "dice_lo": "0.6656395872869876",
+      "dice_hi": "0.6922488226732875",
+      "iou": "0.565019589971092",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "20",
+      "variant": "decoder",
+      "dice": "0.792559895890243",
+      "dice_lo": "0.7842832535600208",
+      "dice_hi": "0.8008469823780044",
+      "iou": "0.6873302120726581",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TN3K test | in-domain",
+      "K": "20",
+      "variant": "direct",
+      "dice": "0.6750978978788008",
+      "dice_lo": "0.6625884565227654",
+      "dice_hi": "0.6876962477413427",
+      "iou": "0.561640650512709",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "1",
+      "variant": "decoder",
+      "dice": "0.666050376637828",
+      "dice_lo": "0.653444436089936",
+      "dice_hi": "0.6784400355502298",
+      "iou": "0.5357954897521121",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "1",
+      "variant": "direct",
+      "dice": "0.47443272319189006",
+      "dice_lo": "0.451003982530376",
+      "dice_hi": "0.4975386658843995",
+      "iou": "0.37350050555244446",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "5",
+      "variant": "decoder",
+      "dice": "0.6994707376629397",
+      "dice_lo": "0.6893991722937527",
+      "dice_hi": "0.7092498033220473",
+      "iou": "0.5714880008251634",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "5",
+      "variant": "direct",
+      "dice": "0.494345476312166",
+      "dice_lo": "0.4727371992791642",
+      "dice_hi": "0.5161032844221576",
+      "iou": "0.3936738406011105",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "10",
+      "variant": "decoder",
+      "dice": "0.7050829914646245",
+      "dice_lo": "0.6952020933178319",
+      "dice_hi": "0.7152072886180774",
+      "iou": "0.577485303635007",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "10",
+      "variant": "direct",
+      "dice": "0.49635292900295697",
+      "dice_lo": "0.47616484484423965",
+      "dice_hi": "0.5170258685395669",
+      "iou": "0.3968939294684746",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "20",
+      "variant": "decoder",
+      "dice": "0.707877623053399",
+      "dice_lo": "0.6978536986506605",
+      "dice_hi": "0.717806190620064",
+      "iou": "0.5807875782145766",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | zero-shot",
+      "K": "20",
+      "variant": "direct",
+      "dice": "0.49851344514707463",
+      "dice_lo": "0.4795234707798028",
+      "dice_hi": "0.5174401056016571",
+      "iou": "0.3990313584843592",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "1",
+      "variant": "decoder",
+      "dice": "0.636449791576301",
+      "dice_lo": "0.62265464686547",
+      "dice_hi": "0.6498051627019796",
+      "iou": "0.5037482510278589",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "1",
+      "variant": "direct",
+      "dice": "0.49062730896312984",
+      "dice_lo": "0.46570601560330394",
+      "dice_hi": "0.5143963617551217",
+      "iou": "0.37669950297022853",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "5",
+      "variant": "decoder",
+      "dice": "0.6711934341552365",
+      "dice_lo": "0.6603458318545714",
+      "dice_hi": "0.6818482792609889",
+      "iou": "0.5372179251443744",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "5",
+      "variant": "direct",
+      "dice": "0.5965382929321145",
+      "dice_lo": "0.5823169319902833",
+      "dice_hi": "0.6103589372835924",
+      "iou": "0.468020584877594",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "10",
+      "variant": "decoder",
+      "dice": "0.6765071744186477",
+      "dice_lo": "0.6668423298480858",
+      "dice_hi": "0.6866465308923193",
+      "iou": "0.5424789144742332",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "10",
+      "variant": "direct",
+      "dice": "0.6174528773669108",
+      "dice_lo": "0.6039747125480515",
+      "dice_hi": "0.6297175168179409",
+      "iou": "0.48639740046764357",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "20",
+      "variant": "decoder",
+      "dice": "0.6803672688895551",
+      "dice_lo": "0.6705041823068623",
+      "dice_hi": "0.6909173139043944",
+      "iou": "0.5471116712041885",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "TNUI test | K-shot target",
+      "K": "20",
+      "variant": "direct",
+      "dice": "0.6276948295112973",
+      "dice_lo": "0.6156366705116528",
+      "dice_hi": "0.6399253597556933",
+      "iou": "0.49611839289491966",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "1",
+      "variant": "decoder",
+      "dice": "0.6445842496063008",
+      "dice_lo": "0.6317318974097001",
+      "dice_hi": "0.6573124927647056",
+      "iou": "0.5257571449615076",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "1",
+      "variant": "direct",
+      "dice": "0.5111348919337991",
+      "dice_lo": "0.4887743868766185",
+      "dice_hi": "0.5331541715504802",
+      "iou": "0.3993701970873984",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "5",
+      "variant": "decoder",
+      "dice": "0.6723232482129257",
+      "dice_lo": "0.6602807290891424",
+      "dice_hi": "0.6832334593063212",
+      "iou": "0.554170086880277",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "5",
+      "variant": "direct",
+      "dice": "0.5636557920542845",
+      "dice_lo": "0.5480445404232054",
+      "dice_hi": "0.578650676282647",
+      "iou": "0.4489860158969964",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "10",
+      "variant": "decoder",
+      "dice": "0.6747950647037027",
+      "dice_lo": "0.662717874344076",
+      "dice_hi": "0.685889354823542",
+      "iou": "0.5568154221708468",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "10",
+      "variant": "direct",
+      "dice": "0.5664507554904235",
+      "dice_lo": "0.5518972201841846",
+      "dice_hi": "0.5800477681367292",
+      "iou": "0.45144756470392994",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "20",
+      "variant": "decoder",
+      "dice": "0.6782477411028708",
+      "dice_lo": "0.6665350302811481",
+      "dice_hi": "0.6888232905221274",
+      "iou": "0.5598430524980674",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | zero-shot",
+      "K": "20",
+      "variant": "direct",
+      "dice": "0.568237224851569",
+      "dice_lo": "0.5544409391800603",
+      "dice_hi": "0.581273878630234",
+      "iou": "0.4534454696417825",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "1",
+      "variant": "decoder",
+      "dice": "0.6400153669766263",
+      "dice_lo": "0.6262723592745125",
+      "dice_hi": "0.6536773632273382",
+      "iou": "0.5153899833139716",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "1",
+      "variant": "direct",
+      "dice": "0.5789339683039233",
+      "dice_lo": "0.5615678120573006",
+      "dice_hi": "0.5965302857327734",
+      "iou": "0.4567517098947185",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "5",
+      "variant": "decoder",
+      "dice": "0.6780176255235388",
+      "dice_lo": "0.6672159076543713",
+      "dice_hi": "0.6887160838257019",
+      "iou": "0.5515050600001163",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "5",
+      "variant": "direct",
+      "dice": "0.6428683396521402",
+      "dice_lo": "0.6322511103311842",
+      "dice_hi": "0.6544508540270174",
+      "iou": "0.5164007714923338",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "10",
+      "variant": "decoder",
+      "dice": "0.6828232451387487",
+      "dice_lo": "0.6727362380830783",
+      "dice_hi": "0.6932706015478778",
+      "iou": "0.5571511773719086",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "10",
+      "variant": "direct",
+      "dice": "0.6506663741819679",
+      "dice_lo": "0.6398468452607116",
+      "dice_hi": "0.6624393883892593",
+      "iou": "0.5247193470094883",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "20",
+      "variant": "decoder",
+      "dice": "0.6859448381457153",
+      "dice_lo": "0.6759556682988085",
+      "dice_hi": "0.6963924390025816",
+      "iou": "0.5601561029046107",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    },
+    {
+      "condition": "DDTI | K-shot target",
+      "K": "20",
+      "variant": "direct",
+      "dice": "0.6528656414796816",
+      "dice_lo": "0.641821032973328",
+      "dice_hi": "0.6642388117901432",
+      "iou": "0.5271456913121022",
+      "n_episodes": "200",
+      "n_cases": "1600"
+    }
+  ]
+}

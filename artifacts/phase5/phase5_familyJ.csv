@@ -1,5 +1,5 @@
 test,metric,A,B,delta(A-B),CI95,p_two_sided,sig_bonf,n_boot,note
-J1,sens@spec90,R1p_lesion,ERM,0.1457,(0.1149..0.1782),0.0,WITHHELD,5000,PRIMARY external operating point (replication)
-J2,AUROC,R1p_lesion,ERM,-0.0401,(-0.0801..-0.0015),0.0436,WITHHELD,5000,rank transfer (secondary)
-J3,sens@spec90,JOINT-g,R1p_lesion,-0.0978,(-0.1264..-0.0709),0.0,WITHHELD,5000,"joint vs frozen grounding, external (H2 analogue)"
-J4,AUROC,R1p_lesion,R0_image,-0.0322,(-0.0709..0.0075),0.1104,WITHHELD,5000,"grounding over whole image, external"
+J1,sens@spec90,R1p_lesion,ERM,0.1457,(0.1149..0.1782),0.0,YES,5000,PRIMARY external operating point (replication)
+J2,AUROC,R1p_lesion,ERM,-0.0401,(-0.0801..-0.0015),0.0436,no,5000,rank transfer (secondary)
+J3,sens@spec90,JOINT-g,R1p_lesion,-0.0978,(-0.1264..-0.0709),0.0,YES,5000,"joint vs frozen grounding, external (H2 analogue)"
+J4,AUROC,R1p_lesion,R0_image,-0.0322,(-0.0709..0.0075),0.1104,no,5000,"grounding over whole image, external"

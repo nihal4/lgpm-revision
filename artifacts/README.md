@@ -15,7 +15,7 @@ are hosted on Hugging Face and placed into these folders by
 | `phase3d/` | TNUI-val bank, pooled tables |
 | `phase3e/` | DDTI and TNUI-train banks, tables |
 | `phase4/` | `joint_{g,img}_trunk.pt`*, TN5000 and external probabilities, selective-prediction tables |
-| `phase5/` | `phase5_bank_thyus2path.npz`*, case manifest, main table, family J, audit report |
+| `phase5/` | licensed run used in the paper (v2): `phase5_bank_thyus2path.npz`*, case manifest, main table, family J, audit report; `v1_before_polarity_attestation/` keeps the first run |
 | `phase6/` | TN5000 and ThyUS-600 panels, family K, faithfulness, stability, cascade, `phase6_montage_store.pkl`* |
 
 \* fetched from Hugging Face.

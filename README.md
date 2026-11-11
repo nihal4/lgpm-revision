@@ -16,6 +16,8 @@ are labelled as not pre-registered.
 | `scripts/s02_xai_controls.py` | GPU, ~10 min | R2.4, R1.7 | True R1p-ELA in-box energy, uniform predicted-mask map (= published K1), Grad-CAM × predicted mask |
 | `scripts/s03_support_free_decoder.py` | GPU, ~60–80 min | R2.1, R1.3 | Capacity-matched support-free decoder on the frozen encoder, evaluated on the identical Phase-2 episodes |
 
+Code: https://github.com/nihal4/lgpm-revision · Large artifacts: https://huggingface.co/nihal4/lgpm-thyroid-artifacts
+
 ## Repository layout
 
 | Path | Contents |
