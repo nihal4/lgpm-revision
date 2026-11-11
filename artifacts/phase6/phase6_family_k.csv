@@ -1,0 +1,5 @@
+test,metric,A,B,delta(A-B),CI95,p_two_sided,sig_bonf,n_boot,n_items,note
+K1,localisation ratio,R1p-ELA,ERM-GradCAM,38.0047,(35.3461..40.8339),0.0,YES,5000,950,PRIMARY plausibility (TN5000 expert boxes)
+K2,deletion gap,R1p,ERM,-0.0598,(-0.0761..-0.0437),0.0,YES,5000,950,faithfulness (TN5000)
+K3,deletion gap,R1p,ERM,-0.0339,(-0.0511..-0.0171),0.0,YES,5000,600,faithfulness (ThyUS-600; label-free)
+K4,deletion gap,JOINT-g,JOINT-img,0.0613,(0.0560..0.0667),0.0,YES,5000,950,grounding vs multi-tasking (G3 mirror)

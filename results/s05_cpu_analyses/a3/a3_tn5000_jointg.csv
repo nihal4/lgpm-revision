@@ -1,0 +1,7 @@
+cohort,coverage,retained,referred,retained_malignant,retained_benign,referred_malignant,referred_benign,misses_total,misses_remaining,misses_referred,misses_referred_pct,random_referral_misses_removed_mean,random_referral_95pct,sens_retained,spec_retained,false_pos_remaining,malignant_share_retained
+TN5000-test JOINT-g,1.0,950,0,693,257,0,0,302,302,0,0.0,0.0,0-0,0.5642,0.9105,23,1.0
+TN5000-test JOINT-g,0.9,855,95,618,237,75,20,302,227,75,24.8,30.2,22-39,0.6327,0.903,23,0.8918
+TN5000-test JOINT-g,0.8,760,190,545,215,148,42,302,154,148,49.0,60.3,49-72,0.7174,0.893,23,0.7864
+TN5000-test JOINT-g,0.7,665,285,462,203,231,54,302,74,228,75.5,90.6,78-104,0.8398,0.8867,23,0.6667
+TN5000-test JOINT-g,0.6,570,380,396,174,297,83,302,59,243,80.5,120.9,106-135,0.851,0.9138,15,0.5714
+TN5000-test JOINT-g,0.5,475,475,325,150,368,107,302,41,261,86.4,151.3,137-166,0.8738,0.92,12,0.469

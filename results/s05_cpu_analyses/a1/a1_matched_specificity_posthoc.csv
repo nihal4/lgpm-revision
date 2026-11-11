@@ -1,0 +1,10 @@
+specificity_of,target_spec,model,sens_at_target_spec
+R0_image,0.9495,R0_image,0.0498
+R0_image,0.9495,R1p_lesion,0.0441
+R0_image,0.9495,R2p_lesion_ring,0.0575
+R1p_lesion,0.8675,R0_image,0.1303
+R1p_lesion,0.8675,R1p_lesion,0.159
+R1p_lesion,0.8675,R2p_lesion_ring,0.1705
+R2p_lesion_ring,0.9148,R0_image,0.0805
+R2p_lesion_ring,0.9148,R1p_lesion,0.092
+R2p_lesion_ring,0.9148,R2p_lesion_ring,0.0881

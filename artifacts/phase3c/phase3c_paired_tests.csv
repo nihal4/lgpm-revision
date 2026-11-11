@@ -1,0 +1,6 @@
+test,delta(A-B),CI95,p,sig(0.01),n_boot
+T1c AUROC R1p - R0 (grounding external),0.1315,(-0.1208..0.4187),0.32431,no,4952
+T2c AUROC ERM - R1p (fine-tune advantage external),-0.194,(-0.4193..0.0651),0.11672,no,4952
+T3c AUROC R1g(mask) - R1p (error propagation external),0.123,(0.0000..0.2896),0.04927,no,4952
+T4c AUROC ERM - R1g(mask) (fine-tune vs true oracle external),-0.317,(-0.4762..-0.1423),0.0004,YES,4952
+T5c sens@spec90 ERM - R1p (operating point external),-0.157,(-0.2537..-0.0597),0.0028,YES,5000

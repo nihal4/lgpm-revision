@@ -1,0 +1,8 @@
+{
+  "params_m_per_model": 24.521697,
+  "ckpt_mb_per_model": 93.70202541351318,
+  "n_models": 1,
+  "latency_ms_cuda_single": 10.629102366692678,
+  "latency_ms_cuda_tta": 39.40303559993481,
+  "latency_ms_cpu_single": 601.8255410000165
+}

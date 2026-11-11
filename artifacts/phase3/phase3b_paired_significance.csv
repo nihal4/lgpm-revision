@@ -1,0 +1,7 @@
+test,metric,A,B,delta(A-B),CI95,p_two_sided,sig_bonf,n_boot,note
+T1,AUROC,R1p_lesion,R0_image,0.0368,(0.0161..0.0589),0.0004,YES,5000,RQ3: lesion > image
+T2,AUROC,ERM,R1p_lesion,0.0498,(0.0308..0.0691),0.0,YES,5000,whole-image fine-tune advantage
+T3,AUROC,R1g_gtbox,R1p_lesion,0.0202,(0.0056..0.0349),0.0048,YES,5000,RQ4: oracle - predicted ROI
+T4,AUROC,R1p_lesion,R2p_lesion_ring,0.0074,(-0.0023..0.0176),0.1388,no,5000,H6: ring penalty (null)
+T5,sens@spec90,R1p_lesion,ERM,-0.0749,(-0.1126..-0.0390),0.0,YES,5000,operating point
+T6,sens@spec90,R1g_gtbox,R1p_lesion,0.0982,(0.0693..0.1270),0.0,YES,5000,oracle vs predicted

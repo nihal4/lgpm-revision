@@ -1,0 +1,3 @@
+id,image,mask,dataset,split,sha256,duplicate_group
+295,/kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI/1_or_data/image/295.PNG,/kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI/1_or_data/mask/295.PNG,DDTI,original,7a39e0c81be76bbbc8dac4f72981a62b4c0043e04072166091df433c5a9a038c,2
+468,/kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI/1_or_data/image/468.PNG,/kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI/1_or_data/mask/468.PNG,DDTI,original,d34596b1a8cba28f5a05f756f32e8d9675f34a14bb6d8752f8260c8c4d4b69c8,2

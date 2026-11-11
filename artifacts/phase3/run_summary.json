@@ -1,0 +1,125 @@
+{
+  "phase": "3 - segmentation-guided classification",
+  "seed": 42,
+  "device": "cuda",
+  "checkpoints": {
+    "encoder": "/kaggle/input/datasets/smnihalahmed/thyroid-phase1-results/best_resnet34_seed42.pt",
+    "decoder": "/kaggle/input/datasets/smnihalahmed/phase2-prototype-seg/best_fusion_decoder.pt"
+  },
+  "config": {
+    "IMG_SIZE": 384,
+    "SEG_K": 20,
+    "PRED_THRESH": 0.5,
+    "RING_PX": 15,
+    "FEAT_SCALES": [
+      "e3",
+      "e4"
+    ],
+    "support_episode_ids": [
+      "1602",
+      "1908",
+      "0209",
+      "0189",
+      "2527",
+      "0955",
+      "0629",
+      "0635",
+      "1569",
+      "1533",
+      "2303",
+      "1681",
+      "0172",
+      "0191",
+      "0306",
+      "0812",
+      "0361",
+      "1797",
+      "1006",
+      "0492"
+    ],
+    "K_PROTO": [
+      "5",
+      "10",
+      "20",
+      "50",
+      "200",
+      "all"
+    ],
+    "N_BOOT": 5000,
+    "pos_weight_train": 0.4189300411522634
+  },
+  "split_sizes": {
+    "train": 3448,
+    "val": 476,
+    "test": 950
+  },
+  "erm_val_auroc": 0.9477969348659004,
+  "main_table": [
+    {
+      "model": "ERM whole-image (ResNet34 ft)",
+      "auroc": 0.9401,
+      "auroc_CI": "(0.9232-0.9553)",
+      "auprc": 0.9738,
+      "sens@spec90(val)": 0.8023,
+      "brier": 0.0878,
+      "ece_post": 0.0634,
+      "ece_pre": 0.0893,
+      "T_val": 1.969
+    },
+    {
+      "model": "R0 image | linear",
+      "auroc": 0.8534,
+      "auroc_CI": "(0.8271-0.8798)",
+      "auprc": 0.9358,
+      "sens@spec90(val)": 0.6479,
+      "brier": 0.152,
+      "ece_post": 0.1244,
+      "ece_pre": 0.1278,
+      "T_val": 0.9
+    },
+    {
+      "model": "R1p lesion | linear",
+      "auroc": 0.8902,
+      "auroc_CI": "(0.8670-0.9122)",
+      "auprc": 0.9519,
+      "sens@spec90(val)": 0.7273,
+      "brier": 0.1515,
+      "ece_post": 0.1734,
+      "ece_pre": 0.1788,
+      "T_val": 0.847
+    },
+    {
+      "model": "R2p lesion+ring | linear (LG-PM)",
+      "auroc": 0.8829,
+      "auroc_CI": "(0.8584-0.9061)",
+      "auprc": 0.9464,
+      "sens@spec90(val)": 0.6869,
+      "brier": 0.1538,
+      "ece_post": 0.1705,
+      "ece_pre": 0.1721,
+      "T_val": 0.956
+    },
+    {
+      "model": "R1g GT box | linear (oracle)",
+      "auroc": 0.9105,
+      "auroc_CI": "(0.8899-0.9299)",
+      "auprc": 0.9635,
+      "sens@spec90(val)": 0.8254,
+      "brier": 0.126,
+      "ece_post": 0.1302,
+      "ece_pre": 0.1339,
+      "T_val": 0.927
+    },
+    {
+      "model": "R2g GT box+ring | linear (oracle)",
+      "auroc": 0.9029,
+      "auroc_CI": "(0.8807-0.9239)",
+      "auprc": 0.9569,
+      "sens@spec90(val)": 0.7763,
+      "brier": 0.1449,
+      "ece_post": 0.1721,
+      "ece_pre": 0.175,
+      "T_val": 0.927
+    }
+  ]
+}

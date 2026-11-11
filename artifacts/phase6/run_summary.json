@@ -1,0 +1,294 @@
+{
+  "phase": "6 - lesion-grounded XAI battery (pre-registered family K)",
+  "seed": 42,
+  "device": "cuda",
+  "protocol": {
+    "N_BOOT_K": 5000,
+    "ALPHA_K": 0.0125,
+    "THY_PANEL_N": 600,
+    "DEL_STEPS": 8,
+    "BLUR_SIGMA": 8.0,
+    "ELA_EXACT_TOL": 0.001,
+    "ELA_PROBE_N": 32,
+    "STAB_N": 160,
+    "RAND_N": 160,
+    "RAND_GATE_RHO": 0.2,
+    "SCORECAM_TOP": 64,
+    "SCORECAM_N": 150,
+    "no_refit": true,
+    "backward_only_for_gradcam": true
+  },
+  "gates": {
+    "erm_archive": 0.940053677407763,
+    "r1p_archive": 0.888916962846924,
+    "erm_live": 0.940376527925166,
+    "r1p_live": 0.888939422013352,
+    "joint_lineage_max_dp": {
+      "g_archive_policy": 2.2470951080322266e-05,
+      "i_archive_policy": 1.9550323486328125e-05,
+      "g_fp32_panel_note": 0.0065919458866119385,
+      "i_fp32_panel_note": 9.959936141967773e-05,
+      "tol": 0.0001,
+      "policy": "archive-matched autocast"
+    },
+    "ela_exactness_max_dev": {
+      "R0_image": 1.6086593122022208e-06,
+      "R1p_lesion": 2.8713985389394736e-07,
+      "R2p_lesion_ring": 2.6563722110850563e-07,
+      "JG": 7.805773072355748e-08,
+      "JI": 2.6362260013845784e-08
+    },
+    "cascade_gate_rho": 0.2,
+    "cascade_pass": false
+  },
+  "cohorts": {
+    "tn5000_test": {
+      "n": 950,
+      "malignant": 693,
+      "empty_mask_fallbacks": 11,
+      "mean_mask_area": 0.04989445559355724,
+      "k1_boxes_used": 950
+    },
+    "thyus_panel": {
+      "n": 600,
+      "malignant": 376,
+      "empty_mask_fallbacks": 132,
+      "mean_mask_area": 0.25343824598524306,
+      "erm_cam_in_mask": 0.26278813628259506
+    }
+  },
+  "plausibility_tn5000": {
+    "r1p_ratio": {
+      "mean": 41.6265712903933,
+      "median": 27.82623979610306
+    },
+    "gc_ratio": {
+      "mean": 3.5995353594242796,
+      "median": 4.444010455217844
+    },
+    "eig_ratio": {
+      "mean": 4.678846229220355,
+      "median": 4.797074835284992
+    },
+    "sc_ratio": {
+      "mean": 3.5691372240214467,
+      "median": 3.5705027696933973
+    },
+    "r1p_hit": {
+      "mean": 0.6368421052631579,
+      "median": 1.0
+    },
+    "gc_hit": {
+      "mean": 0.5136842105263157,
+      "median": 1.0
+    },
+    "eig_hit": {
+      "mean": 0.7357894736842105,
+      "median": 1.0
+    },
+    "sc_hit": {
+      "mean": 0.58,
+      "median": 1.0
+    },
+    "r1p_inbox": {
+      "mean": 0.7964966663669274,
+      "median": 0.8865503120107125
+    },
+    "gc_inbox": {
+      "mean": 0.14603379447279094,
+      "median": 0.11077543598731895
+    },
+    "gc_inmask": {
+      "mean": 0.13541112829974652,
+      "median": 0.09060763248049872
+    },
+    "gc_inring": {
+      "mean": 0.09045730937659255,
+      "median": 0.11722192499625103
+    },
+    "r1p_ent": {
+      "mean": 0.7167563749811577,
+      "median": 0.7221908148086094
+    },
+    "gc_ent": {
+      "mean": 0.9276480423752044,
+      "median": 0.9300207460309082
+    }
+  },
+  "faithfulness_tn5000": [
+    {
+      "model": "R1p",
+      "del_AUC guided": 0.3334,
+      "del_AUC random": 0.4986,
+      "del gap": 0.1652,
+      "ins gap (n=300)": 0.0351
+    },
+    {
+      "model": "ERM",
+      "del_AUC guided": 0.3315,
+      "del_AUC random": 0.5564,
+      "del gap": 0.2249,
+      "ins gap (n=300)": 0.2043
+    },
+    {
+      "model": "JOINT-g",
+      "del_AUC guided": 0.3886,
+      "del_AUC random": 0.4908,
+      "del gap": 0.1022,
+      "ins gap (n=300)": 0.0356
+    },
+    {
+      "model": "JOINT-img",
+      "del_AUC guided": 0.4405,
+      "del_AUC random": 0.4815,
+      "del gap": 0.041,
+      "ins gap (n=300)": 0.0144
+    }
+  ],
+  "stability": [
+    {
+      "cohort": "TN5000-test",
+      "model": "R1p",
+      "perturbation": "noise",
+      "mean Spearman": 0.9208,
+      "median": 0.9972,
+      "n": 160
+    },
+    {
+      "cohort": "TN5000-test",
+      "model": "R1p",
+      "perturbation": "affine",
+      "mean Spearman": 0.7713,
+      "median": 0.8815,
+      "n": 160
+    },
+    {
+      "cohort": "TN5000-test",
+      "model": "ERM",
+      "perturbation": "noise",
+      "mean Spearman": 0.8317,
+      "median": 0.8865,
+      "n": 160
+    },
+    {
+      "cohort": "TN5000-test",
+      "model": "ERM",
+      "perturbation": "affine",
+      "mean Spearman": 0.8709,
+      "median": 0.9245,
+      "n": 160
+    },
+    {
+      "cohort": "ThyUS-600",
+      "model": "R1p",
+      "perturbation": "noise",
+      "mean Spearman": 0.799,
+      "median": 0.9782,
+      "n": 160
+    },
+    {
+      "cohort": "ThyUS-600",
+      "model": "R1p",
+      "perturbation": "affine",
+      "mean Spearman": 0.6402,
+      "median": 0.7909,
+      "n": 160
+    },
+    {
+      "cohort": "ThyUS-600",
+      "model": "ERM",
+      "perturbation": "noise",
+      "mean Spearman": 0.7545,
+      "median": 0.7879,
+      "n": 160
+    },
+    {
+      "cohort": "ThyUS-600",
+      "model": "ERM",
+      "perturbation": "affine",
+      "mean Spearman": 0.8103,
+      "median": 0.8574,
+      "n": 160
+    }
+  ],
+  "cascade": [
+    {
+      "stage": "fc",
+      "mean |rho|": 0.2948,
+      "mean rho": -0.0618,
+      "n": 160
+    },
+    {
+      "stage": "fc+layer4",
+      "mean |rho|": 0.1492,
+      "mean rho": 0.1287,
+      "n": 160
+    },
+    {
+      "stage": "fc+layer4+layer3",
+      "mean |rho|": 0.1205,
+      "mean rho": -0.0135,
+      "n": 160
+    },
+    {
+      "stage": "R1p head weights",
+      "mean |rho|": 0.2991,
+      "mean rho": 0.2982,
+      "n": 160
+    }
+  ],
+  "familyK": [
+    {
+      "test": "K1",
+      "metric": "localisation ratio",
+      "A": "R1p-ELA",
+      "B": "ERM-GradCAM",
+      "delta(A-B)": 38.0047,
+      "CI95": "(35.3461..40.8339)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "n_items": 950,
+      "note": "PRIMARY plausibility (TN5000 expert boxes)"
+    },
+    {
+      "test": "K2",
+      "metric": "deletion gap",
+      "A": "R1p",
+      "B": "ERM",
+      "delta(A-B)": -0.0598,
+      "CI95": "(-0.0761..-0.0437)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "n_items": 950,
+      "note": "faithfulness (TN5000)"
+    },
+    {
+      "test": "K3",
+      "metric": "deletion gap",
+      "A": "R1p",
+      "B": "ERM",
+      "delta(A-B)": -0.0339,
+      "CI95": "(-0.0511..-0.0171)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "n_items": 600,
+      "note": "faithfulness (ThyUS-600; label-free)"
+    },
+    {
+      "test": "K4",
+      "metric": "deletion gap",
+      "A": "JOINT-g",
+      "B": "JOINT-img",
+      "delta(A-B)": 0.0613,
+      "CI95": "(0.0560..0.0667)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "n_items": 950,
+      "note": "grounding vs multi-tasking (G3 mirror)"
+    }
+  ]
+}

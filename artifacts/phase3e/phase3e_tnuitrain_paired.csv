@@ -1,0 +1,6 @@
+test,delta(A-B),CI95,p,sig(0.01),n_boot
+"F1 AUROC R1p - R0 (grounding, TNUI-train)",0.0846,(0.0083..0.1642),0.0252,no,5000
+"F2 AUROC ERM - R1p (fine-tune advantage, TNUI-train)",-0.0381,(-0.1156..0.0396),0.326,no,5000
+"F3 AUROC R1g(mask) - R1p (error propagation, TNUI-train)",0.0144,(-0.0381..0.0631),0.5656,no,5000
+"F4 AUROC ERM - R1g(mask) (fine-tune vs oracle, TNUI-train)",-0.0525,(-0.1367..0.0335),0.2216,no,5000
+"F5 sens@spec90 ERM - R1p (operating point, TNUI-train)",-0.1259,(-0.1628..-0.0885),0.0,YES,5000

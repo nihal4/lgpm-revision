@@ -1,0 +1,7 @@
+model,ECE pre,ECE post,T
+ERM whole-image (ResNet34 ft),0.0893,0.0634,1.969
+R0 image | linear,0.1278,0.1244,0.9
+R1p lesion | linear,0.1788,0.1734,0.847
+R2p lesion+ring | linear (LG-PM),0.1721,0.1705,0.956
+R1g GT box | linear (oracle),0.1339,0.1302,0.927
+R2g GT box+ring | linear (oracle),0.175,0.1721,0.927

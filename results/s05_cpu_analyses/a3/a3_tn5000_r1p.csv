@@ -1,0 +1,7 @@
+cohort,coverage,retained,referred,retained_malignant,retained_benign,referred_malignant,referred_benign,misses_total,misses_remaining,misses_referred,misses_referred_pct,random_referral_misses_removed_mean,random_referral_95pct,sens_retained,spec_retained,false_pos_remaining,malignant_share_retained
+TN5000-test R1p,1.0,950,0,693,257,0,0,189,189,0,0.0,0.0,0-0,0.7273,0.8755,32,1.0
+TN5000-test R1p,0.9,855,95,613,242,80,15,189,129,60,31.7,18.8,12-26,0.7896,0.8967,25,0.8846
+TN5000-test R1p,0.8,760,190,541,219,152,38,189,103,86,45.5,37.7,28-47,0.8096,0.9087,20,0.7807
+TN5000-test R1p,0.7,665,285,463,202,230,55,189,77,112,59.3,56.8,46-68,0.8337,0.9257,15,0.6681
+TN5000-test R1p,0.6,570,380,389,181,304,76,189,58,131,69.3,75.8,64-88,0.8509,0.9282,13,0.5613
+TN5000-test R1p,0.5,475,475,315,160,378,97,189,45,144,76.2,94.6,83-107,0.8571,0.95,8,0.4545

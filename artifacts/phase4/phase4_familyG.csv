@@ -1,0 +1,5 @@
+test,metric,A,B,delta(A-B),CI95,p_two_sided,sig_bonf,n_boot,note
+G1,AUROC,JOINTg,ERM,-0.0703,(-0.0927..-0.0486),0.0,YES,5000,is the T2 fine-tune gap closed?
+G2,AUROC,JOINTg,R1p,-0.0205,(-0.0365..-0.0045),0.0124,YES,5000,joint vs frozen grounding
+G3,AUROC,JOINTg,JOINTimg,0.1489,(0.1136..0.1848),0.0,YES,5000,grounding vs multi-tasking
+G4,sens@spec90,JOINTg,ERM,-0.2376,(-0.2785..-0.1962),0.0,YES,5000,operating point

@@ -10,8 +10,7 @@ gates on the locked published values before reporting.
   A3   referral workload + random-referral baseline (TN5000-test and TNUI pool)
   X2   20-seed head replicates applied to ThyUS2Path
 
-Attach: Phase_3_classification, phase3_c_, phase3d_external, phase3e_external,
-phase4_joint, phase5_thyus2path(_v2).
+No raw data needed: runs entirely from artifacts/.
 """
 import sys
 from pathlib import Path

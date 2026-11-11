@@ -1,0 +1,22 @@
+{
+  "phase": "3c - zero-shot external classification (TNUI-2021 test)",
+  "seed": 42,
+  "device": "cuda",
+  "protocol": {
+    "threshold_source": "TN5000 val (raw-raw)",
+    "temperature_source": "TN5000 val",
+    "support_episode": "same as Phase 3 (verified vs run_summary.json)",
+    "oracle": "true TNUI masks (not boxes)"
+  },
+  "n_ext": 139,
+  "prevalence_malignant": 0.9640287769784173,
+  "seg_qc": {
+    "mean_dice": 0.7046149969100952,
+    "empty_mask_rate": 0.0
+  },
+  "tables": {
+    "main": "phase3c_tnui_main_table.csv",
+    "paired": "phase3c_paired_tests.csv",
+    "shift": "phase3c_domain_shift.csv"
+  }
+}

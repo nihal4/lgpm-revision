@@ -1,0 +1,174 @@
+{
+  "phase": "4 - joint partial-supervision fine-tune",
+  "seed": 42,
+  "device": "cuda",
+  "protocol_version": "v2 (two-phase: trunk-frozen warmup + low-LR joint; seg-guarded selection)",
+  "protocol": {
+    "EPOCHS": 15,
+    "PATIENCE": 4,
+    "LR": 0.0001,
+    "WD": 0.0001,
+    "LR_JOINT": 1e-05,
+    "EPOCHS_WARM": 25,
+    "SEG_SELECT_GUARD": 0.8066,
+    "LAMBDA_SEG": 1.0,
+    "LAMBDA_CLS": 1.0,
+    "PRED_THRESH": 0.5,
+    "SEG_EVAL_THRESH": 0.6,
+    "FEAT_SCALES": [
+      "e3",
+      "e4"
+    ],
+    "BATCH": 32,
+    "ALPHA_G": 0.0125,
+    "ALPHA_H": 0.016666666666666666,
+    "N_BOOT_G": 5000,
+    "N_BOOT_H": 2000
+  },
+  "gates": {
+    "tn3k_train_pool": 2447,
+    "tn5000_splits": {
+      "train": 3448,
+      "val": 476,
+      "test": 950
+    },
+    "seg_qc": {
+      "lesion": {
+        "tn3k_test_dice": 0.8257755005950175
+      },
+      "image": {
+        "tn3k_test_dice": 0.8165323909348998
+      }
+    },
+    "erm_sanity": 0.940053677407763,
+    "r1p_integrity": 0.8902420536661781
+  },
+  "arms_meta": {
+    "lesion": {
+      "best_val_auroc": 0.8868773946360154,
+      "tn3k_val_dice_saved": 0.8127506909799058,
+      "seg_feasible_any": true,
+      "n_joint_feasible": 15
+    },
+    "image": {
+      "best_val_auroc": 0.7326867816091953,
+      "tn3k_val_dice_saved": 0.8100318155982182,
+      "seg_feasible_any": true,
+      "n_joint_feasible": 7
+    }
+  },
+  "best_val_auroc": {
+    "lesion": 0.8868773946360154,
+    "image": 0.7326867816091953
+  },
+  "familyG": [
+    {
+      "test": "G1",
+      "metric": "AUROC",
+      "A": "JOINTg",
+      "B": "ERM",
+      "delta(A-B)": -0.0703,
+      "CI95": "(-0.0927..-0.0486)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "note": "is the T2 fine-tune gap closed?"
+    },
+    {
+      "test": "G2",
+      "metric": "AUROC",
+      "A": "JOINTg",
+      "B": "R1p",
+      "delta(A-B)": -0.0205,
+      "CI95": "(-0.0365..-0.0045)",
+      "p_two_sided": 0.0124,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "note": "joint vs frozen grounding"
+    },
+    {
+      "test": "G3",
+      "metric": "AUROC",
+      "A": "JOINTg",
+      "B": "JOINTimg",
+      "delta(A-B)": 0.1489,
+      "CI95": "(0.1136..0.1848)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "note": "grounding vs multi-tasking"
+    },
+    {
+      "test": "G4",
+      "metric": "sens@spec90",
+      "A": "JOINTg",
+      "B": "ERM",
+      "delta(A-B)": -0.2376,
+      "CI95": "(-0.2785..-0.1962)",
+      "p_two_sided": 0.0,
+      "sig_bonf": "YES",
+      "n_boot": 5000,
+      "note": "operating point"
+    }
+  ],
+  "familyH": [
+    {
+      "test": "H1",
+      "metric": "sens@spec90",
+      "A": "JOINTg",
+      "B": "ERM",
+      "delta(A-B)": 0.0661,
+      "CI95": "(0.0051..0.1276)",
+      "p_two_sided": 0.033,
+      "sig_bonf": "no",
+      "n_boot": 2000,
+      "note": "PRIMARY external operating point"
+    },
+    {
+      "test": "H2",
+      "metric": "sens@spec90",
+      "A": "JOINTg",
+      "B": "R1p",
+      "delta(A-B)": -0.0534,
+      "CI95": "(-0.0969..-0.0102)",
+      "p_two_sided": 0.011,
+      "sig_bonf": "YES",
+      "n_boot": 2000,
+      "note": "joint vs frozen grounding, external"
+    },
+    {
+      "test": "H3",
+      "metric": "AUROC",
+      "A": "JOINTg",
+      "B": "ERM",
+      "delta(A-B)": -0.0109,
+      "CI95": "(-0.1442..0.1322)",
+      "p_two_sided": 0.858,
+      "sig_bonf": "no",
+      "n_boot": 2000,
+      "note": "external rank (secondary)"
+    }
+  ],
+  "ext_seg_qc": {
+    "TNUI-test": {
+      "dice_mean": 0.7201306928477018,
+      "empty_rate": 0.0,
+      "area_mean": 0.04297533686936116
+    },
+    "TNUI-val": {
+      "dice_mean": 0.7650714561520173,
+      "empty_rate": 0.0,
+      "area_mean": 0.04624992220689726
+    },
+    "TNUI-train": {
+      "dice_mean": 0.7543295780343972,
+      "empty_rate": 0.003105590062111801,
+      "area_mean": 0.041294425592710036
+    },
+    "DDTI": {
+      "dice_mean": 0.6737582874646573,
+      "empty_rate": 0.0,
+      "area_mean": 0.0633005979224527
+    }
+  }
+}

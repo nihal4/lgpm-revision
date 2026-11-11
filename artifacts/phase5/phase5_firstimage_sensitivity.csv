@@ -1,0 +1,7 @@
+model,auroc_first_image,sens@spec90_first_image
+ERM,0.5328,0.1648
+R0_image,0.5006,0.1475
+R1p_lesion,0.4877,0.2375
+R2p_lesion_ring,0.4965,0.2069
+JOINT-g,0.4813,0.1743
+JOINT-img,0.4974,0.0632

@@ -11,8 +11,7 @@ never computed external specificity. This script:
      CIs, sensitivity - FPR, and PPV; J1-style McNemar on malignant AND benign cases; and
      a post hoc matched-specificity view.  Nothing is refitted.
 
-Attach: ThyUS2Path, Thyroid_phase1_results, phase2 prototype seg (decoder not needed here),
-Phase_3_classification, phase3_c_, phase4_joint, phase5_thyus2path(_v2).
+Raw data (Kaggle input): ThyUS2Path. Everything else comes from artifacts/.
 """
 import sys
 from pathlib import Path

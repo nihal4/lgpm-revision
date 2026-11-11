@@ -16,22 +16,33 @@ are labelled as not pre-registered.
 | `scripts/s02_xai_controls.py` | GPU, ~10 min | R2.4, R1.7 | True R1p-ELA in-box energy, uniform predicted-mask map (= published K1), Grad-CAM × predicted mask |
 | `scripts/s03_support_free_decoder.py` | GPU, ~60–80 min | R2.1, R1.3 | Capacity-matched support-free decoder on the frozen encoder, evaluated on the identical Phase-2 episodes |
 
-`lgpm_rev/common.py` holds the frozen machinery copied from the phase notebooks
-(letterboxing, ResNet34-UNet, fusion decoder, prototypes, masked pooling, spec-0.90
-threshold rule). `scripts/cpu/` holds the stand-alone CPU analyses that `s05` runs.
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `original_experiments/` | the 11 phase notebooks that produced the submitted results, with run order |
+| `artifacts/` | every saved phase output (manifests, feature banks, heads, probabilities, tables); 8 large files come from Hugging Face |
+| `lgpm_rev/common.py` | frozen machinery copied from the phase notebooks (letterboxing, ResNet34-UNet, fusion decoder, prototypes, masked pooling, spec-0.90 threshold rule) |
+| `scripts/` | revision analyses `s01`–`s05`, `scripts/cpu/` helpers, `fetch_large_files.py` |
+| `notebooks/lgpm_revision_kaggle.ipynb` | one-click Kaggle run of all revision analyses |
+| `results/` | outputs of the revision analyses |
+| `paper/original_submission/` | manuscript and supplement as submitted |
+
+The raw image datasets (TN3K, TN5000, TNUI-2021, DDTI, ThyUS2Path) are not redistributed
+here; they are public from their original sources and attached as Kaggle inputs.
 
 ## Run on Kaggle
 
-1. Push this repo to GitHub (public, or private with a token).
-2. Upload `notebooks/lgpm_revision_kaggle.ipynb` to Kaggle; set **GPU T4 x2** and **Internet On**.
-3. Attach the datasets listed in the notebook's first cell; edit `REPO_URL`.
-4. Run all. Download `revision_outputs.zip` from the Output panel.
+1. Upload `notebooks/lgpm_revision_kaggle.ipynb`; set **GPU T4 x2** and **Internet On**.
+2. Attach only the raw image datasets: TN3K_Data, TNUI-2021, TN5000, ThyUS2Path (and the DDTI dataset if used).
+3. Set `REPO_URL`, then Run All (~2 h). Download `revision_outputs.zip` from the Output panel.
 
-## Run locally (CPU parts)
+## Run locally (CPU parts, no raw images needed)
 
 ```bash
 pip install -r requirements.txt
-LGPM_INPUT_ROOTS=/path/to/downloaded/outputs LGPM_OUT=./revision_outputs python scripts/s05_cpu_analyses.py
+python scripts/fetch_large_files.py
+python scripts/s05_cpu_analyses.py        # writes results/latest_run/
 ```
 
 ## Findings so far (from the CPU analyses, 11 Nov 2026)

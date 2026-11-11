@@ -1,0 +1,4 @@
+test,metric,A,B,delta(A-B),CI95,p_two_sided,sig_bonf,n_boot,note
+H1,sens@spec90,JOINTg,ERM,0.0661,(0.0051..0.1276),0.033,no,2000,PRIMARY external operating point
+H2,sens@spec90,JOINTg,R1p,-0.0534,(-0.0969..-0.0102),0.011,YES,2000,"joint vs frozen grounding, external"
+H3,AUROC,JOINTg,ERM,-0.0109,(-0.1442..0.1322),0.858,no,2000,external rank (secondary)

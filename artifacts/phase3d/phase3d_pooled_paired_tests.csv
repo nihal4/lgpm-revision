@@ -1,0 +1,6 @@
+test,delta(A-B),CI95,p,sig(0.01),n_boot
+"P1 AUROC R1p - R0 (grounding, pooled)",0.0227,(-0.0718..0.1234),0.662,no,5000
+"P2 AUROC ERM - R1p (fine-tune advantage, pooled)",-0.0118,(-0.1264..0.0991),0.8524,no,5000
+"P3 AUROC R1g(mask) - R1p (error propagation, pooled)",0.0554,(-0.0077..0.1293),0.0964,no,5000
+"P4 AUROC ERM - R1g(mask) (fine-tune vs oracle, pooled)",-0.0672,(-0.1822..0.0382),0.224,no,5000
+"P5 sens@spec90 ERM - R1p (operating point, pooled)",-0.1201,(-0.1811..-0.0612),0.0,YES,5000

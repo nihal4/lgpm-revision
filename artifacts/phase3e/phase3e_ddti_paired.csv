@@ -1,0 +1,6 @@
+test,delta(A-B),CI95,p,sig(0.01),n_boot
+"E1 AUROC R1p - R0 (grounding, DDTI)",-0.0162,(-0.1064..0.0768),0.724,no,5000
+"E2 AUROC ERM - R1p (fine-tune advantage, DDTI)",-0.0215,(-0.1220..0.0823),0.6756,no,5000
+"E3 AUROC R1g(mask) - R1p (error propagation, DDTI)",-0.0749,(-0.1498..-0.0006),0.0484,no,5000
+"E4 AUROC ERM - R1g(mask) (fine-tune vs oracle, DDTI)",0.0534,(-0.0407..0.1473),0.2728,no,5000
+"E5 sens@spec90 ERM - R1p (operating point, DDTI)",0.1456,(0.0621..0.2345),0.0012,YES,5000

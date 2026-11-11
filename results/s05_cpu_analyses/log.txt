@@ -1,0 +1,209 @@
+  bank       /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz
+  cases      /tmp/kin/phase5_thyus2path/phase5_manifest_unique_cases.csv
+  heads3c    /tmp/kin/phase3-c/linear_heads_retrained.json
+  heads3     /tmp/kin/phase-3-classification/linear_heads_results.json
+  val        /tmp/kin/phase-3-classification/features_val.npz
+  train      /tmp/kin/phase-3-classification/features_train.npz
+  test       /tmp/kin/phase-3-classification/features_test.npz
+  tnui_test  /tmp/kin/phase3-c/features_tnui_test.npz
+  tnui_val   /tmp/kin/phase3d-external/features_tnui_val.npz
+  ddti       /tmp/kin/phase3e-external/features_tnui_ddti.npz
+  tnui_train /tmp/kin/phase3e-external/features_tnui_tnuitrain.npz
+  ext        /tmp/kin/phase4-joint/phase4_external_probs.json
+  joint      /tmp/kin/phase4-joint/phase4_joint_probs_tn5000.json
+  erm        /tmp/kin/phase-3-classification/erm_resnet34_probs.json
+  [GATE OK]   TN5000 train/val/test features come from one folder
+
+$ /home/claude/lgpm-revision/scripts/cpu/map_cases.py /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz /tmp/kin/phase5_thyus2path/phase5_manifest_unique_cases.csv /tmp/kout/s05_cpu_analyses/thy_image_case_map.csv
+boundary at row 5970: batch1 5970 images, batch2 2495 images
+cases in bank: 839 (malignant 522); excluded vs manifest: 3 -> ['batch1_image:237', 'batch1_image:253', 'batch1_image:338']
+per-batch cases: {'batch1_image': 598, 'batch2_image': 241}
+
+
+$ /home/claude/lgpm-revision/scripts/cpu/a1_external_operating_points.py /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz /tmp/kout/s05_cpu_analyses/thy_image_case_map.csv /tmp/kin/phase3-c/linear_heads_retrained.json /tmp/kin/phase-3-classification/features_val.npz /tmp/kout/s05_cpu_analyses/a1
+ThyUS2Path cases 839 (malignant 522, benign 317)
+          model  threshold_raw  val_sens  val_spec  auroc_case  ext_sens   ext_sens_CI  ext_spec   ext_spec_CI  TP  FN  TN  FP  flagged_positive  n_cases
+       R0_image         0.6669    0.6389    0.9052      0.5400    0.0460 0.0290-0.0651    0.9495 0.9248-0.9716  24 498 301  16                40      839
+     R1p_lesion         0.5435    0.7528    0.9138      0.5081    0.1590 0.1282-0.1910    0.8675 0.8282-0.9037  83 439 275  42               125      839
+R2p_lesion_ring         0.5885    0.7417    0.9052      0.5211    0.0881 0.0646-0.1134    0.9148 0.8817-0.9437  46 476 290  27                73      839
+
+POST HOC matched-specificity sensitivities:
+specificity_of   R0_image  R1p_lesion  R2p_lesion_ring
+model                                                 
+R0_image           0.0498      0.1303           0.0805
+R1p_lesion         0.0441      0.1590           0.0920
+R2p_lesion_ring    0.0575      0.1705           0.0881
+
+  [GATE OK]   A1 R0_image reproduces Table S15 (AUROC 0.54, sens 0.046)
+  [GATE OK]   A1 R1p_lesion reproduces Table S15 (AUROC 0.5081, sens 0.159)
+  [GATE OK]   A1 R2p_lesion_ring reproduces Table S15 (AUROC 0.5211, sens 0.0881)
+
+$ /home/claude/lgpm-revision/scripts/cpu/a1b_tnui_operating_points.py /tmp/kin/phase4-joint/phase4_external_probs.json /tmp/kin/phase4-joint/phase4_joint_probs_tn5000.json /tmp/kin/phase-3-classification/erm_resnet34_probs.json /tmp/kin/phase3-c/linear_heads_retrained.json /tmp/kin/phase-3-classification/features_val.npz /tmp/kin/phase3-c/features_tnui_test.npz /tmp/kin/phase3d-external/features_tnui_val.npz /tmp/kout/s05_cpu_analyses/a1b
+thresholds: {'JOINTg': 0.5944, 'JOINTimg': 0.5558, 'ERM': 0.9233, 'R1p': 0.5435}
+   cohort    model   n  benign  auroc   sens   spec     spec_CI  TP  FN  TN  FP  sens_minus_fpr
+TNUI-test      ERM 139       5 0.5172 0.5373 0.6000 0.000-1.000  72  62   3   2          0.1373
+TNUI-test      R1p 139       5 0.7119 0.6940 0.6000 0.000-1.000  93  41   3   2          0.2940
+TNUI-test   JOINTg 139       5 0.7075 0.6119 0.8000 0.333-1.000  82  52   4   1          0.4119
+TNUI-test JOINTimg 139       5 0.6493 0.1343 0.8000 0.250-1.000  18 116   4   1         -0.0657
+ TNUI-val      ERM 274      16 0.6237 0.5504 0.6250 0.375-0.857 142 116  10   6          0.1754
+ TNUI-val      R1p 274      16 0.5775 0.6512 0.5000 0.250-0.750 168  90   8   8          0.1512
+ TNUI-val   JOINTg 274      16 0.5523 0.6124 0.4375 0.200-0.667 158 100   7   9          0.0499
+ TNUI-val JOINTimg 274      16 0.5337 0.1434 0.8750 0.700-1.000  37 221  14   2          0.0184
+TNUI pool      ERM 413      21 0.5969 0.5459 0.6190 0.409-0.826 214 178  13   8          0.1650
+TNUI pool      R1p 413      21 0.6079 0.6658 0.5238 0.312-0.737 261 131  11  10          0.1896
+TNUI pool   JOINTg 413      21 0.5871 0.6122 0.5238 0.300-0.750 240 152  11  10          0.1361
+TNUI pool JOINTimg 413      21 0.5556 0.1403 0.8571 0.692-1.000  55 337  18   3         -0.0026
+
+  [GATE OK]   A1b TNUI-test ERM sens 0.5373 (locked 0.5373)
+  [GATE OK]   A1b TNUI-test R1p sens 0.694 (locked 0.694)
+  [GATE OK]   A1b TNUI-val R1p sens 0.6512 (locked 0.6512)
+  [GATE OK]   A1b TNUI pool R1p sens 0.6658 (locked 0.6658)
+  [GATE OK]   A1b TNUI pool ERM sens 0.5459 (locked 0.5459)
+
+$ /home/claude/lgpm-revision/scripts/cpu/a1c_ddti_tnuitrain_operating_points.py /tmp/kin/phase4-joint/phase4_external_probs.json /tmp/kout/s05_cpu_analyses/a1b/a1b_thresholds.json /tmp/kin/phase3e-external/features_tnui_ddti.npz /tmp/kin/phase3e-external/features_tnui_tnuitrain.npz /tmp/kout/s05_cpu_analyses/a1c
+    cohort    model   n  benign  auroc   sens   spec     spec_CI  TP  FN  TN  FP  sens_minus_fpr
+      DDTI      ERM 189      44 0.4746 0.4828 0.4545 0.304-0.600  70  75  20  24         -0.0627
+      DDTI      R1p 189      44 0.4967 0.3379 0.7045 0.564-0.840  49  96  31  13          0.0425
+      DDTI   JOINTg 189      44 0.5210 0.2621 0.7955 0.673-0.913  38 107  35   9          0.0575
+      DDTI JOINTimg 189      44 0.5296 0.0414 0.9773 0.925-1.000   6 139  43   1          0.0187
+TNUI-train      ERM 966      51 0.5936 0.5519 0.5686 0.431-0.705 505 410  29  22          0.1205
+TNUI-train      R1p 966      51 0.6316 0.6776 0.5098 0.373-0.653 620 295  26  25          0.1874
+TNUI-train   JOINTg 966      51 0.5845 0.6251 0.5294 0.393-0.661 572 343  27  24          0.1545
+TNUI-train JOINTimg 966      51 0.5270 0.1574 0.8627 0.762-0.954 144 771  44   7          0.0201
+
+  [GATE OK]   A1c DDTI ERM sens 0.4828 (locked 0.4828)
+  [GATE OK]   A1c DDTI R1p sens 0.3379 (locked 0.3379)
+  [GATE OK]   A1c TNUI-train R1p sens 0.6776 (locked 0.6776)
+
+$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test JOINT-g /tmp/kout/s05_cpu_analyses/a3/y_test.npy /tmp/kout/s05_cpu_analyses/a3/p_jg_test.npy 0.5943993926048279 0.5234472415475986 /tmp/kout/s05_cpu_analyses/a3/a3_tn5000_jointg.csv
+== TN5000-test JOINT-g: n=950, malignant=693, benign=257, thr=0.5944, T=0.5234
+ coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
+      1.0       950         0                 693              257                   0                0           302               302                0                  0.0                                  0.0                   0-0         0.5642         0.9105                   23                    1.0000
+      0.9       855        95                 618              237                  75               20           302               227               75                 24.8                                 30.2                 22-39         0.6327         0.9030                   23                    0.8918
+      0.8       760       190                 545              215                 148               42           302               154              148                 49.0                                 60.3                 49-72         0.7174         0.8930                   23                    0.7864
+      0.7       665       285                 462              203                 231               54           302                74              228                 75.5                                 90.6                78-104         0.8398         0.8867                   23                    0.6667
+      0.6       570       380                 396              174                 297               83           302                59              243                 80.5                                120.9               106-135         0.8510         0.9138                   15                    0.5714
+      0.5       475       475                 325              150                 368              107           302                41              261                 86.4                                151.3               137-166         0.8738         0.9200                   12                    0.4690
+
+
+$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test R1p /tmp/kout/s05_cpu_analyses/a3/y_test.npy /tmp/kout/s05_cpu_analyses/a3/p_r1p_test.npy 0.5322940945625305 0.8473908477378832 /tmp/kout/s05_cpu_analyses/a3/a3_tn5000_r1p.csv
+== TN5000-test R1p: n=950, malignant=693, benign=257, thr=0.5323, T=0.8474
+ coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
+      1.0       950         0                 693              257                   0                0           189               189                0                  0.0                                  0.0                   0-0         0.7273         0.8755                   32                    1.0000
+      0.9       855        95                 613              242                  80               15           189               129               60                 31.7                                 18.8                 12-26         0.7896         0.8967                   25                    0.8846
+      0.8       760       190                 541              219                 152               38           189               103               86                 45.5                                 37.7                 28-47         0.8096         0.9087                   20                    0.7807
+      0.7       665       285                 463              202                 230               55           189                77              112                 59.3                                 56.8                 46-68         0.8337         0.9257                   15                    0.6681
+      0.6       570       380                 389              181                 304               76           189                58              131                 69.3                                 75.8                 64-88         0.8509         0.9282                   13                    0.5613
+      0.5       475       475                 315              160                 378               97           189                45              144                 76.2                                 94.6                83-107         0.8571         0.9500                    8                    0.4545
+
+
+$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool JOINT-g /tmp/kout/s05_cpu_analyses/a1b/y_tnui_pool.npy /tmp/kout/s05_cpu_analyses/a1b/p_jointg_tnui_pool.npy 0.5943993926048279 0.5234472415475986 /tmp/kout/s05_cpu_analyses/a3/a3_tnui_pool_jointg.csv
+== TNUI pool JOINT-g: n=413, malignant=392, benign=21, thr=0.5944, T=0.5234
+ coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
+      1.0       413         0                 392               21                   0                0           152               152                0                  0.0                                  0.0                   0-0         0.6122         0.5238                   10                    1.0000
+      0.9       372        41                 354               18                  38                3           152               114               38                 25.0                                 15.1                 10-21         0.6780         0.4444                   10                    0.9031
+      0.8       330        83                 314               16                  78                5           152                74               78                 51.3                                 30.5                 23-38         0.7643         0.3750                   10                    0.8010
+      0.7       289       124                 276               13                 116                8           152                44              108                 71.1                                 45.7                 37-54         0.8406         0.3077                    9                    0.7041
+      0.6       248       165                 236               12                 156                9           152                33              119                 78.3                                 60.9                 51-71         0.8602         0.3333                    8                    0.6020
+      0.5       206       207                 195               11                 197               10           152                20              132                 86.8                                 76.3                 67-86         0.8974         0.3636                    7                    0.4974
+
+
+$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool R1p /tmp/kout/s05_cpu_analyses/a1b/y_tnui_pool.npy /tmp/kout/s05_cpu_analyses/a1b/p_r1p_tnui_pool.npy 0.5435171127319336 0.8473908477378832 /tmp/kout/s05_cpu_analyses/a3/a3_tnui_pool_r1p.csv
+== TNUI pool R1p: n=413, malignant=392, benign=21, thr=0.5435, T=0.8474
+ coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
+      1.0       413         0                 392               21                   0                0           131               131                0                  0.0                                  0.0                   0-0         0.6658         0.5238                   10                    1.0000
+      0.9       372        41                 354               18                  38                3           131               103               28                 21.4                                 12.9                  8-18         0.7090         0.4444                   10                    0.9031
+      0.8       330        83                 314               16                  78                5           131                88               43                 32.8                                 26.4                 19-34         0.7197         0.4375                    9                    0.8010
+      0.7       289       124                 275               14                 117                7           131                71               60                 45.8                                 39.3                 31-48         0.7418         0.5000                    7                    0.7015
+      0.6       248       165                 235               13                 157                8           131                58               73                 55.7                                 52.4                 44-61         0.7532         0.5385                    6                    0.5995
+      0.5       206       207                 196               10                 196               11           131                46               85                 64.9                                 65.7                 56-75         0.7653         0.5000                    5                    0.5000
+
+  [GATE OK]   A3 reproduces Table S14 (TN5000)
+  [GATE OK]   A3 reproduces Table S14 (TNUI pool)
+
+$ /home/claude/lgpm-revision/scripts/cpu/x2_head_replicates.py /tmp/kin/phase-3-classification /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz /tmp/kout/s05_cpu_analyses/thy_image_case_map.csv 20 /tmp/kout/s05_cpu_analyses/x2
+n seed  0: test AUROC 0.8914 | ThyUS2Path AUROC 0.5096 sens 0.155 spec 0.858 sens-FPR +0.013
+R1p_lesion seed  1: test AUROC 0.8916 | ThyUS2Path AUROC 0.5109 sens 0.159 spec 0.864 sens-FPR +0.023
+R1p_lesion seed  2: test AUROC 0.8940 | ThyUS2Path AUROC 0.5169 sens 0.192 spec 0.833 sens-FPR +0.024
+R1p_lesion seed  3: test AUROC 0.8933 | ThyUS2Path AUROC 0.5101 sens 0.184 spec 0.836 sens-FPR +0.020
+R1p_lesion seed  4: test AUROC 0.8946 | ThyUS2Path AUROC 0.5119 sens 0.188 spec 0.845 sens-FPR +0.033
+R1p_lesion seed  5: test AUROC 0.8926 | ThyUS2Path AUROC 0.5134 sens 0.159 spec 0.871 sens-FPR +0.030
+R1p_lesion seed  6: test AUROC 0.8906 | ThyUS2Path AUROC 0.5081 sens 0.132 spec 0.890 sens-FPR +0.022
+R1p_lesion seed  7: test AUROC 0.8937 | ThyUS2Path AUROC 0.5184 sens 0.174 spec 0.845 sens-FPR +0.020
+R1p_lesion seed  8: test AUROC 0.8885 | ThyUS2Path AUROC 0.5072 sens 0.144 spec 0.874 sens-FPR +0.017
+R1p_lesion seed  9: test AUROC 0.8868 | ThyUS2Path AUROC 0.5069 sens 0.169 spec 0.845 sens-FPR +0.014
+R1p_lesion seed 10: test AUROC 0.8946 | ThyUS2Path AUROC 0.5110 sens 0.146 spec 0.877 sens-FPR +0.023
+R1p_lesion seed 11: test AUROC 0.8926 | ThyUS2Path AUROC 0.5121 sens 0.107 spec 0.899 sens-FPR +0.006
+R1p_lesion seed 12: test AUROC 0.8925 | ThyUS2Path AUROC 0.5190 sens 0.165 spec 0.855 sens-FPR +0.020
+R1p_lesion seed 13: test AUROC 0.8942 | ThyUS2Path AUROC 0.5076 sens 0.161 spec 0.861 sens-FPR +0.022
+R1p_lesion seed 14: test AUROC 0.8892 | ThyUS2Path AUROC 0.5053 sens 0.151 spec 0.868 sens-FPR +0.019
+R1p_lesion seed 15: test AUROC 0.8902 | ThyUS2Path AUROC 0.5065 sens 0.163 spec 0.855 sens-FPR +0.018
+R1p_lesion seed 16: test AUROC 0.8929 | ThyUS2Path AUROC 0.5099 sens 0.146 spec 0.874 sens-FPR +0.019
+R1p_lesion seed 17: test AUROC 0.8941 | ThyUS2Path AUROC 0.5189 sens 0.113 spec 0.905 sens-FPR +0.018
+R1p_lesion seed 18: test AUROC 0.8938 | ThyUS2Path AUROC 0.5118 sens 0.142 spec 0.874 sens-FPR +0.016
+R1p_lesion seed 19: test AUROC 0.8921 | ThyUS2Path AUROC 0.5104 sens 0.149 spec 0.861 sens-FPR +0.011
+R0_image   seed  0: test AUROC 0.8524 | ThyUS2Path AUROC 0.5423 sens 0.040 spec 0.953 sens-FPR -0.007
+R0_image   seed  1: test AUROC 0.8506 | ThyUS2Path AUROC 0.5380 sens 0.038 spec 0.956 sens-FPR -0.006
+R0_image   seed  2: test AUROC 0.8508 | ThyUS2Path AUROC 0.5376 sens 0.040 spec 0.953 sens-FPR -0.007
+R0_image   seed  3: test AUROC 0.8495 | ThyUS2Path AUROC 0.5355 sens 0.067 spec 0.921 sens-FPR -0.012
+R0_image   seed  4: test AUROC 0.8520 | ThyUS2Path AUROC 0.5358 sens 0.057 spec 0.931 sens-FPR -0.012
+R0_image   seed  5: test AUROC 0.8512 | ThyUS2Path AUROC 0.5410 sens 0.044 spec 0.946 sens-FPR -0.010
+R0_image   seed  6: test AUROC 0.8475 | ThyUS2Path AUROC 0.5329 sens 0.073 spec 0.921 sens-FPR -0.006
+R0_image   seed  7: test AUROC 0.8479 | ThyUS2Path AUROC 0.5282 sens 0.061 spec 0.931 sens-FPR -0.008
+R0_image   seed  8: test AUROC 0.8512 | ThyUS2Path AUROC 0.5369 sens 0.038 spec 0.950 sens-FPR -0.012
+R0_image   seed  9: test AUROC 0.8486 | ThyUS2Path AUROC 0.5304 sens 0.052 spec 0.934 sens-FPR -0.015
+R0_image   seed 10: test AUROC 0.8546 | ThyUS2Path AUROC 0.5388 sens 0.065 spec 0.924 sens-FPR -0.011
+R0_image   seed 11: test AUROC 0.8485 | ThyUS2Path AUROC 0.5308 sens 0.044 spec 0.940 sens-FPR -0.016
+R0_image   seed 12: test AUROC 0.8466 | ThyUS2Path AUROC 0.5334 sens 0.061 spec 0.924 sens-FPR -0.014
+R0_image   seed 13: test AUROC 0.8499 | ThyUS2Path AUROC 0.5344 sens 0.044 spec 0.934 sens-FPR -0.022
+R0_image   seed 14: test AUROC 0.8490 | ThyUS2Path AUROC 0.5376 sens 0.046 spec 0.943 sens-FPR -0.011
+R0_image   seed 15: test AUROC 0.8492 | ThyUS2Path AUROC 0.5307 sens 0.052 spec 0.934 sens-FPR -0.015
+R0_image   seed 16: test AUROC 0.8464 | ThyUS2Path AUROC 0.5275 sens 0.069 spec 0.918 sens-FPR -0.013
+R0_image   seed 17: test AUROC 0.8463 | ThyUS2Path AUROC 0.5281 sens 0.048 spec 0.934 sens-FPR -0.018
+R0_image   seed 18: test AUROC 0.8478 | ThyUS2Path AUROC 0.5298 sens 0.057 spec 0.924 sens-FPR -0.018
+R0_image   seed 19: test AUROC 0.8489 | ThyUS2Path AUROC 0.5304 sens 0.059 spec 0.927 sens-FPR -0.013
+
+ rep                       R0_image  R1p_lesion
+tn5000_test_auroc  count   20.0000     20.0000
+                   mean     0.8494      0.8922
+                   std      0.0022      0.0022
+                   min      0.8463      0.8868
+                   25%      0.8478      0.8912
+                   50%      0.8491      0.8926
+                   75%      0.8509      0.8939
+                   max      0.8546      0.8946
+thy_case_auroc     count   20.0000     20.0000
+                   mean     0.5340      0.5113
+                   std      0.0044      0.0042
+                   min      0.5275      0.5053
+                   25%      0.5304      0.5080
+                   50%      0.5339      0.5106
+                   75%      0.5376      0.5124
+                   max      0.5423      0.5190
+thy_sens           count   20.0000     20.0000
+                   mean     0.0529      0.1549
+                   std      0.0110      0.0219
+                   min      0.0383      0.1073
+                   25%      0.0441      0.1451
+                   50%      0.0517      0.1571
+                   75%      0.0613      0.1657
+                   max      0.0728      0.1916
+thy_spec           count   20.0000     20.0000
+                   mean     0.9349      0.8645
+                   std      0.0117      0.0194
+                   min      0.9180      0.8328
+                   25%      0.9243      0.8525
+                   50%      0.9338      0.8628
+                   75%      0.9440      0.8738
+                   max      0.9558      0.9054
+thy_sens_minus_fpr count   20.0000     20.0000
+                   mean    -0.0123      0.0194
+                   std      0.0044      0.0061
+                   min     -0.0222      0.0063
+                   25%     -0.0145      0.0170
+                   50%     -0.0120      0.0195
+                   75%     -0.0092      0.0222
+                   max     -0.0058      0.0332
+
+
+all CPU analyses done -> /tmp/kout/s05_cpu_analyses

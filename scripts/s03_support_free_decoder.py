@@ -14,7 +14,7 @@ Arms, all on the SAME frozen Phase-1 encoder and the SAME Phase-2 evaluation epi
 Reported: episode-mean Dice per arm and paired episode-bootstrap deltas (B-A, C-A).
 Also per-image Dice on the full test pools for B and C (GATE for C: Table S2 non-TTA).
 
-Attach: TN3K_Data (contains DDTI), TNUI-2021, Thyroid_phase1_results, phase2 prototype seg.
+Raw data (Kaggle input): TN3K_Data (contains DDTI), TNUI-2021. Needs artifacts/phase2/best_fusion_decoder.pt.
 """
 import sys
 from pathlib import Path

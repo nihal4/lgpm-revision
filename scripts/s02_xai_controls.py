@@ -14,8 +14,7 @@ panel, and then adds the comparisons the reviewers asked for:
 Paired bootstrap (5,000, seed 42) on the localisation ratio for:
   ELA - Grad-CAM, ELA - uniform mask, masked Grad-CAM - uniform mask, ELA - masked Grad-CAM.
 
-Attach: TN5000, TN3K_Data, Thyroid_phase1_results, phase2 prototype seg,
-Phase_3_classification, phase3_c_, phase6_xai.
+Raw data (Kaggle input): TN5000, TN3K_Data. Needs artifacts/phase2/best_fusion_decoder.pt.
 """
 import sys
 from pathlib import Path

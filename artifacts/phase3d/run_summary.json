@@ -1,0 +1,32 @@
+{
+  "phase": "3d - second external cohort (TNUI-2021 val) + pre-declared pooled sensitivity",
+  "seed": 42,
+  "device": "cuda",
+  "protocol": {
+    "threshold_source": "TN5000 val (raw-raw)",
+    "temperature_source": "TN5000 val",
+    "support_episode": "same as Phase 3 (verified vs run_summary.json)",
+    "oracle": "true TNUI masks (not boxes)",
+    "heads_provenance": "phase3c cache (identical heads across cohorts - the pre-declaration)",
+    "test_bank_provenance": "3c cache (locked-run bytes)",
+    "replication_gate": {
+      "tolerance": 0.0015,
+      "pooled_ok": true
+    },
+    "declaration": "val cohort + pooled analysis specified before val inspection"
+  },
+  "n_val": 274,
+  "val_prevalence_malignant": 0.9416058394160584,
+  "val_benign": 16,
+  "seg_qc_val": {
+    "mean_dice": 0.7307328581809998,
+    "empty_mask_rate": 0.014598540145985401
+  },
+  "tables": {
+    "val_main": "phase3d_tnui_val_main_table.csv",
+    "val_paired": "phase3d_paired_tests_val.csv",
+    "shift_3cohort": "phase3d_domain_shift_3cohort.csv",
+    "pooled_main": "phase3d_pooled_main_table.csv",
+    "pooled_paired": "phase3d_pooled_paired_tests.csv"
+  }
+}

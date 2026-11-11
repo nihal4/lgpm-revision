@@ -1,0 +1,5 @@
+cohort,sign(R1p-ERM AUROC),sign(R1p-ERM sens@spec90)
+TNUI-test,1.0,1.0
+TNUI-val,-1.0,1.0
+TNUI-train,1.0,1.0
+DDTI,1.0,-1.0

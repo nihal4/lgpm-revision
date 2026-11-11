@@ -1,0 +1,2 @@
+rho_orig_vs_rand,rho_rand_vs_rand_floor_abs,rho_rand_vs_rand_floor_signed,feature_spearman_mean,feature_spearman_absmean,feature_pearson_mean,n
+0.2991315108382745,0.09196753137537059,0.0715168809368685,-0.014967378190151962,0.019072550419786956,-0.0015634620250908715,160

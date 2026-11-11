@@ -8,8 +8,8 @@ cast each vote, rebuilds the locked 189-case cohort (GATE: 189 cases, 145 malign
 reports how every final label was reached, including cases decided only by TI-RADS and
 cases whose sources disagree.
 
-Attach: TN3K_Data (contains the DDTI folder) and, if you used it in Phase 3e, the
-"DDTI: Thyroid Ultrasound Images" dataset.
+Raw data (Kaggle input): TN3K_Data (contains DDTI) and, if Phase 3e used it,
+the "DDTI: Thyroid Ultrasound Images" dataset.
 """
 import sys
 from pathlib import Path

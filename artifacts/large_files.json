@@ -1,0 +1,70 @@
+{
+ "hf_repo": "REPLACE-WITH-HF-USER/REPLACE-WITH-REPO",
+ "url_template": "https://huggingface.co/{hf_repo}/resolve/main/{name}",
+ "files": [
+  {
+   "name": "best_resnet34_seed42.pt",
+   "bytes": 98253695,
+   "sha256": "87967379edc58c6284aba475f748a73e4741986181487b9a68b09e2c36fa9b4b",
+   "dest": "artifacts/phase1",
+   "description": "Phase-1 ResNet34-UNet (frozen encoder for every later phase)",
+   "required_by_revision": true
+  },
+  {
+   "name": "best_unet_resnet18_tn3k.pt",
+   "bytes": 57764819,
+   "sha256": "810a33e27ae1030a66ce5a52fd03e71928edfd03f4fe8f79f7b8efedd248cc99",
+   "dest": "artifacts/phase1",
+   "description": "Phase-1 ResNet18-UNet (efficiency reference; not used by the revision scripts)",
+   "required_by_revision": false
+  },
+  {
+   "name": "erm_resnet34_tn5000.pt",
+   "bytes": 85276875,
+   "sha256": "da110de91d718daae230f511d64af8e7f17f5efd2417b2b804950ee68597dc59",
+   "dest": "artifacts/phase3",
+   "description": "Phase-3 whole-image ERM classifier",
+   "required_by_revision": true
+  },
+  {
+   "name": "features_train.npz",
+   "bytes": 50165597,
+   "sha256": "de69a4b69dcb34ac74aa4d281a2354596b6eae033a23edd630b0c0ee5d4c304f",
+   "dest": "artifacts/phase3",
+   "description": "Phase-3 TN5000-train descriptor bank (R0/R1p/R2p/R1g/R2g)",
+   "required_by_revision": true
+  },
+  {
+   "name": "joint_g_trunk.pt",
+   "bytes": 98251459,
+   "sha256": "8784917b096c3d3967ec9f90c04858a37317ee1b9bdf0cd029f3a1a99c6d5a1c",
+   "dest": "artifacts/phase4",
+   "description": "Phase-4 JOINT-g trunk + head (protocol v2)",
+   "required_by_revision": true
+  },
+  {
+   "name": "joint_img_trunk.pt",
+   "bytes": 98252031,
+   "sha256": "1cb4412eabf649d93359f8a992bd43fd28e74ca73c6b997bc68c6314107821cf",
+   "dest": "artifacts/phase4",
+   "description": "Phase-4 JOINT-img trunk + head (protocol v2)",
+   "required_by_revision": true
+  },
+  {
+   "name": "phase5_bank_thyus2path.npz",
+   "bytes": 77473741,
+   "sha256": "aefc87acfdb4693203d843214b8776baf6ac34ae482ef750a11508f28f29eda4",
+   "dest": "artifacts/phase5",
+   "description": "Phase-5 ThyUS2Path descriptor bank (8,465 images)",
+   "required_by_revision": true
+  },
+  {
+   "name": "phase6_montage_store.pkl",
+   "bytes": 25954573,
+   "sha256": "ed4a723ae3463e41be3c2600694bed53a384dae5b44685e0b413bd9827de8169",
+   "dest": "artifacts/phase6",
+   "description": "Phase-6 qualitative montage store (figure only)",
+   "required_by_revision": false
+  }
+ ]
+}

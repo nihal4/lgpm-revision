@@ -1,0 +1,9 @@
+cohort,model,perturbation,mean Spearman,median,n
+TN5000-test,R1p,noise,0.9208,0.9972,160
+TN5000-test,R1p,affine,0.7713,0.8815,160
+TN5000-test,ERM,noise,0.8317,0.8865,160
+TN5000-test,ERM,affine,0.8709,0.9245,160
+ThyUS-600,R1p,noise,0.799,0.9782,160
+ThyUS-600,R1p,affine,0.6402,0.7909,160
+ThyUS-600,ERM,noise,0.7545,0.7879,160
+ThyUS-600,ERM,affine,0.8103,0.8574,160

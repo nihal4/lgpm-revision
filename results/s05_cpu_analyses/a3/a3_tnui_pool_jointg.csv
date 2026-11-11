@@ -1,0 +1,7 @@
+cohort,coverage,retained,referred,retained_malignant,retained_benign,referred_malignant,referred_benign,misses_total,misses_remaining,misses_referred,misses_referred_pct,random_referral_misses_removed_mean,random_referral_95pct,sens_retained,spec_retained,false_pos_remaining,malignant_share_retained
+TNUI pool JOINT-g,1.0,413,0,392,21,0,0,152,152,0,0.0,0.0,0-0,0.6122,0.5238,10,1.0
+TNUI pool JOINT-g,0.9,372,41,354,18,38,3,152,114,38,25.0,15.1,10-21,0.678,0.4444,10,0.9031
+TNUI pool JOINT-g,0.8,330,83,314,16,78,5,152,74,78,51.3,30.5,23-38,0.7643,0.375,10,0.801
+TNUI pool JOINT-g,0.7,289,124,276,13,116,8,152,44,108,71.1,45.7,37-54,0.8406,0.3077,9,0.7041
+TNUI pool JOINT-g,0.6,248,165,236,12,156,9,152,33,119,78.3,60.9,51-71,0.8602,0.3333,8,0.602
+TNUI pool JOINT-g,0.5,206,207,195,11,197,10,152,20,132,86.8,76.3,67-86,0.8974,0.3636,7,0.4974

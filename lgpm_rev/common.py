@@ -30,9 +30,14 @@ FEAT_SCALES = ["e3", "e4"]
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 import os
-# Kaggle defaults; override with LGPM_INPUT_ROOTS="dir1:dir2" and LGPM_OUT=dir for local runs
-INPUT_ROOTS = tuple(os.environ.get("LGPM_INPUT_ROOTS", "/kaggle/input:/kaggle/working").split(":"))
-OUT_ROOT = Path(os.environ.get("LGPM_OUT", "/kaggle/working/revision_outputs"))
+# Where inputs are searched, in order: the repo's own artifacts/ (all phase outputs and
+# checkpoints; large ones fetched by scripts/fetch_large_files.py), then /kaggle/input
+# (ONLY the raw image datasets: TN3K_Data, TNUI-2021, TN5000, ThyUS2Path, DDTI).
+# Override with LGPM_INPUT_ROOTS="dir1:dir2" and LGPM_OUT=dir.
+REPO = Path(__file__).resolve().parents[1]
+INPUT_ROOTS = tuple(os.environ.get("LGPM_INPUT_ROOTS", f"{REPO / 'artifacts'}:/kaggle/input").split(":"))
+OUT_ROOT = Path(os.environ.get("LGPM_OUT", "/kaggle/working/revision_outputs" if Path("/kaggle").exists()
+                               else str(REPO / "results" / "latest_run")))
 
 MEAN = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
 STD = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)

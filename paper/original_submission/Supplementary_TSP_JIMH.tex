@@ -1,0 +1,1467 @@
+%======================================================================
+% supplementary.tex - LG-PM Supplementary Information
+% Standalone compile: pdflatex supplementary x2
+% Submitted alongside: "Lesion-grounded prototype meta-learning for
+% few-shot thyroid ultrasound: segmentation, diagnosis, and faithful
+% explanations under domain shift" -- Journal of Intelligent Medicine
+% and Healthcare (JIMH), Tech Science Press.
+%======================================================================
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+\usepackage{xcolor}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thealgorithm}{S\arabic{algorithm}}
+\newcommand{\lgShrink}[1]{\resizebox{\textwidth}{!}{#1}}
+
+\title{\textbf{Supplementary Material}\\[4pt]
+\normalsize for: Lesion-grounded prototype meta-learning for few-shot thyroid
+ultrasound: segmentation, diagnosis, and faithful explanations under
+domain shift\\[4pt]
+\small S.~M.~Nihal Ahmed, Afrim Hossen Khan and Sabikun Nahar Sinthia\\[2pt]
+\small Department of Software Engineering, Daffodil International University, Dhaka, Bangladesh\\[4pt]
+\small \emph{Journal of Intelligent Medicine and Healthcare}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\noindent\emph{This document preserves, verbatim, the methodological
+detail moved out of the 16-page main text. Each block is labelled and
+cross-referenced to the title of the main-text subsection that cites
+it. Main-text equations and section numbers referenced here are those
+of the compressed manuscript.}
+
+%======================================================================
+% sm_methods.tex - Supplementary Methods (LG-PM 16-page split, 2026-08-23)
+% Blocks below are VERBATIM extractions from proposed_methodology.tex
+% (SM-CANDIDATE flags #1-#13, operator commission 2026-08-23).
+% Main-text pointer labels use subsection titles, not numbers.
+%======================================================================
+
+\section{Supplementary data, annotation, and de-duplication detail}\label{sm:data}
+
+\noindent\emph{S1.1 Per-image recorded fields (referenced from main text, Section `Data sources and annotation roles').}
+
+The data pipeline records the following fields for every image:
+
+\begin{itemize}
+  \item dataset and domain identifier;
+  \item patient, nodule, or examination identifier, where available
+  (TN3K, TNUI-2021, and DDTI do not provide usable patient linkage in the
+  released files - a recorded limitation);
+  \item benign/malignant label and its source;
+  \item mask, bounding box, or no localisation annotation;
+  \item image dimensions, colour mode, and acquisition metadata, where
+  available;
+  \item split assignment and episode membership; and
+  \item a cryptographic (SHA-256) image hash for duplicate checking.
+\end{itemize}
+
+\noindent\emph{S1.2 Annotation hierarchy (referenced from main text, Section `Data sources and annotation roles').}
+
+The following annotation hierarchy is maintained:
+
+\begin{enumerate}
+  \item pixel masks supervise or evaluate segmentation;
+  \item bounding boxes provide weaker localisation annotation and define the
+  oracle region of interest where masks are absent (TN5000);
+  \item image- or case-level pathology labels supervise malignancy
+  classification; and
+  \item TI-RADS or radiologist-derived labels are reported separately from
+  pathology-confirmed outcomes.
+\end{enumerate}
+
+\noindent\emph{S1.3 Label parsers: full precedence specification (referenced from main text, Section `Data sources and annotation roles'; the TN5000 malignant-if-any rule and the TNUI polarity assumption-with-evidence are retained in the main text).}
+
+\paragraph{Label provenance and harmonisation.}
+Classification labels enter the pipeline through three documented parsers:
+
+\begin{description}
+  \item[TN5000 (source).] Pascal-VOC XML with object class names
+  \texttt{"0"} (benign) and \texttt{"1"} (malignant). The image label is
+  \emph{malignant-if-any} across annotated objects, and the oracle ROI box
+  is the union of the boxes of the objects that decide the label. The
+  official \texttt{ImageSets/Main} split files are used as released (the
+  combined \texttt{trainval} file is not used).
+  \item[TNUI-2021 (external).] Per-split CSV files (\texttt{ID},
+  \texttt{Labels}; numeric 0/1) with identical schemas across splits. The
+  polarity ($1 = $ malignant) is not stated in public documentation. We
+  adopt this polarity as an \emph{assumption-with-evidence}: the
+  alternative polarity
+  would force in-domain-validated features to anti-classify on every TNUI
+  cohort, and cohort sizes and prevalence are consistent with the
+  published dataset description. The assumption is recorded in the
+  limitations rather than silently absorbed.
+  \item[DDTI (external).] Per-case XML diagnoses are parsed by an
+  element-aware parser with a fixed precedence: literal
+  \emph{benign}/\emph{malignant} strings override numeric diagnosis codes;
+  diagnosis codes map $1 \rightarrow$ benign and $3 \rightarrow$
+  malignant (all other codes unknown); TI-RADS annotations map
+  $1$--$3 \rightarrow$ benign and $4^{(\ast)}$/$5 \rightarrow$ malignant.
+  Evidence is aggregated malignant-if-any, mirroring the TN5000 rule, and
+  cases without a parseable diagnosis are excluded and counted. A vote
+  profile (how many cases decided by each evidence class) is printed in
+  every run for audit.
+\end{description}
+
+\noindent\emph{S1.4 Exact-duplicate policy mechanics (referenced from main text, Section `Data splitting, de-duplication, and external-validation protocol').}
+
+\paragraph{Exact-duplicate policy.}
+Every image is hashed (SHA-256). Within each dataset, exact duplicate files
+are removed once per dataset, keeping the occurrence in the highest-priority
+partition (TN3K: trainval $>$ test; TNUI-2021: train $>$ val $>$ test).
+Dropped duplicates are archived in a separate manifest.
+Cross-dataset hashing runs against every pool that donates support cases (TN3K
+training pool) and between every pair of classification cohorts. Exclusions
+in later phases replicate the exclusion policy locked by earlier phases,
+with a recompute fallback. Each experiment notebook independently
+re-derives the clean
+manifests from the raw dataset files. When the audit manifests from the
+dataset-audit phase are mounted, the re-derived manifests are verified
+against them at hash level. For classification phases, the TN5000 manifest must additionally
+re-derive the exact locked split sizes before any model is trained or
+applied.
+
+
+\section{Supplementary model and training configuration}\label{sm:config}
+
+\noindent\emph{S2.1 Stage-1 supervised reference: optimisation and inference (referenced from main text, `Stage 1 optimisation').}
+
+\subsubsection{Stage 1 optimisation and inference details (supervised
+ reference)}
+
+
+The Stage 1 reference is a ResNet34-encoder U-Net. We train it with AdamW
+(learning rate $10^{-3}$, weight decay $10^{-4}$), mixed precision, and
+ReduceLROnPlateau scheduling (factor 0.5, patience 4), for at most 60 epochs
+with early stopping (patience 12). An exponential moving average (EMA) of
+the weights (decay 0.999) is maintained; each epoch selects the better of
+raw and EMA weights by validation Dice. Training-time augmentation
+(albumentations) comprises horizontal flip, affine scaling/translation
+(0.85--1.15, $\pm$5\%) with rotation ($\pm10^{\circ}$),
+brightness/contrast jitter ($\pm$0.25), Gaussian (speckle-like) noise,
+mild Gaussian blur, and elastic deformation. At inference, we select a sigmoid
+operating threshold on the internal validation split only
+(sweep $0.10$--$0.70$, step $0.02$) and freeze it before any test or external
+evaluation. Test-time augmentation (TTA; identity, horizontal flip,
+$\pm5^{\circ}$ rotation; probability-averaged) is reported alongside
+single-view inference. The tuned threshold value is reported in Results.
+
+
+\noindent\emph{S2.2 Stage-2 episodic meta-training regimen (referenced from main text, `Stage 2: Episodic decoder meta-training').}
+
+\subsubsection{Stage 2: Episodic decoder meta-training (single source
+ domain)}
+
+The encoder is frozen. Each training episode samples nested supports
+($K_m$ re-drawn uniformly from $\{1,5,10,20\}$) and eight queries from the
+source training pool. We apply light \emph{joint} augmentation (consistent
+flip, $\pm10^{\circ}$ rotation, and per-image gain across all episode
+images and masks), compute multi-scale prototypes with the frozen encoder,
+and minimise the query loss with respect to the decoder parameters only.
+Optimisation uses AdamW ($10^{-3}$, 300 episodes per epoch) with early
+stopping on mean query Dice over 100 validation episodes (patience 8). Joint episodic meta-training
+across multiple source domains is a designated extension; the primary
+protocol trains on TN3K and characterises transfer to TNUI-2021 and DDTI
+under the zero-shot and mask-shot conditions defined above.
+
+
+\noindent\emph{S2.3 Linear-head training configuration (referenced from main text, `Classification heads').}
+
+\paragraph{Linear heads (primary).}
+Each regime's descriptor is standardised with the training-split mean and
+standard deviation. We train a logistic linear head (a single affine layer)
+with AdamW (learning rate $3\times10^{-3}$, weight decay
+$10^{-2}$), binary cross-entropy with positive-class weighting
+$(n_{\mathrm{neg}}/n_{\mathrm{pos}}$ on the training split), mini-batches
+of 512, at most 300 epochs, and early stopping on validation AUROC
+(patience 25, improvement margin $10^{-4}$, seed 42). The only quantity
+that varies across regimes is \emph{what is pooled}; standardisation,
+optimiser, and selection protocol are identical, so R0--R1p contrasts
+isolate grounding and R1p--R1g contrasts isolate segmentation error.
+
+
+\noindent\emph{S2.4 Whole-image ERM baseline configuration (referenced from main text, `Classification heads').}
+
+\paragraph{Whole-image ERM baseline (the fair comparator).}
+The comparator is whole-image empirical risk minimisation (ERM). An
+ImageNet-pretrained ResNet34 with a single-logit head is fine-tuned
+end-to-end on TN5000 images (BCE with positive-class weighting; AdamW,
+learning rate $10^{-4}$, weight decay $10^{-4}$; cosine annealing over
+$15$ epochs; early stopping on validation AUROC, patience 4; light
+augmentation: horizontal flip, $\pm7^{\circ}$ rotation, gain jitter
+$0.8$--$1.2$; seed 42). This row must be strong --- it is the conventional
+alternative a reviewer compares the grounded pipeline against, both
+in-domain and externally. An uncertainty-aware (shrunk-covariance)
+prototype scorer is designated as an extension and is not part of the
+reported heads.
+
+
+\noindent\emph{S2.5 Calibration configuration (referenced from main text, `Stage 4: Calibration, operating points, and model selection').}
+
+\subsubsection{Stage 4: Calibration, operating points, and model selection}
+
+The source validation split (TN5000 val for classification; TN3K internal
+val for segmentation) is used for: early stopping; the segmentation
+operating-threshold sweep (validation only, then frozen); TTA
+configuration; decoder checkpoint selection; and, for classification,
+temperature scaling and the decision threshold. We fit a single scalar temperature
+per model by grid search over log-spaced candidates
+$T\in[0.05, 20]$, minimising validation negative log-likelihood on the
+model's validation logits. The operating threshold per model is the
+validation point of maximal sensitivity subject to specificity
+$\geq 0.90$ on \emph{raw} validation probabilities. Both are frozen before
+any test or external evaluation. No target-domain annotation is used for
+any of these decisions.
+
+
+\noindent\emph{S2.6 Feature-bank per-case quality fields (verbatim from the feature-bank governing convention; referenced from main text, `Lesion--context descriptor regimes').}
+
+Cached per case alongside the five descriptors: empty-mask flag, predicted area fraction, mean foreground probability, a $96\times96$ mask thumbnail.
+
+\section{Extended formulation}\label{sm:formulation}
+
+\noindent\emph{S3.1 Episode and encoder definitions (referenced from main text, `Episode formulation' and `Shared multi-scale encoder').}
+
+A segmentation episode pairs a support set with a query set:
+
+\begin{equation}
+  \mathcal{T}_{\mathrm{seg}}^{(d)}
+  = \left(\mathcal{S}_{\mathrm{seg}}^{(d)},
+  \mathcal{Q}_{\mathrm{seg}}^{(d)}\right),
+  \label{eq:seg_task}
+\end{equation}
+
+The support set contains $K_m$ image--mask pairs and the query set $Q_m=8$ disjoint images:
+
+\begin{equation}
+  \mathcal{S}_{\mathrm{seg}}^{(d)}
+  = \left\{(x_i,m_i)\right\}_{i=1}^{K_m},
+  \qquad
+  \mathcal{Q}_{\mathrm{seg}}^{(d)}
+  = \left\{(x_j,m_j)\right\}_{j=1}^{Q_m},
+  \qquad m_i\in\{0,1\}^{H\times W}.
+  \label{eq:seg_support_query}
+\end{equation}
+
+The shared encoder maps an input image to multi-scale feature maps:
+
+\begin{equation}
+  \left\{F^l(x)\right\}_{l=1}^{L}=E_\theta(x),
+  \qquad F^l(x)\in\mathbb{R}^{C_l\times H_l\times W_l}.
+  \label{eq:multiscale_encoder}
+\end{equation}
+
+\noindent\emph{S3.2 Uncertainty-aware segmentation prototypes (pre-specified extension, not executed; equations referenced from main text, `Support-conditioned segmentation prototypes').}
+
+\subsubsection{Uncertainty-aware segmentation prototypes (extension)}
+
+A point prototype can be unstable when $K_m=1$ or when the support images are
+not representative of the query domain. As a designated extension, a
+channel-wise support variance may be estimated:
+
+\begin{equation}
+  v_c^l
+  = \frac{1}{K_m}\sum_{i=1}^{K_m}
+    \left(p_{c,i}^{l}-p_c^l\right)^2,
+  \qquad c\in\{f,b\},
+  \label{eq:prototype_variance}
+\end{equation}
+
+where $p_{c,i}^l$ is the prototype from support image $i$, stabilised by a
+source-validation shrinkage coefficient $\rho$:
+
+\begin{equation}
+  \tilde v_c^l
+  =(1-\rho)v_c^l+\rho\,\mathrm{mean}(v_c^l),
+  \qquad 0\leq\rho\leq1,
+  \label{eq:variance_shrinkage}
+\end{equation}
+
+with the uncertainty-adjusted similarity
+
+\begin{equation}
+  \tilde s_c^l(x_q,u)
+  =-
+  \frac{\left(F^l(x_q,u)-p_c^l\right)^2}
+       {\tilde v_c^l+\epsilon},
+  \label{eq:uncertain_similarity}
+\end{equation}
+
+with channel-wise division and aggregation across channels. This variant is
+not part of the executed pipeline: the point-prototype model is the primary
+and only reported configuration. We retain the variance-weighted form here
+only as a pre-specified extension.
+
+
+\noindent\emph{S3.3 Dense segmentation metric definitions (referenced from main text, `Evaluation metrics').}
+
+Dice and intersection-over-union (IoU) are computed per case as:
+
+\begin{equation}
+  \mathrm{Dice}
+  =\frac{2|M\cap\hat M|}{|M|+|\hat M|},
+  \qquad
+  \mathrm{IoU}
+  =\frac{|M\cap\hat M|}{|M\cup\hat M|}.
+  \label{eq:dice_iou_metric}
+\end{equation}
+
+\section{Pre-registered protocols: full specifications}\label{sm:protocols}
+
+\noindent\emph{S4.1 Phase-4 joint fine-tuning: full regimen (referenced from main text, `Pre-registered joint partial-supervision phase'; the v1 gate failure and the 0.8066 guard are retained in the main text).}
+
+Training follows protocol v2 (amended 2026-08-21, before any family-$G$/$H$
+evaluation). \emph{Phase W} warms the classification head on the
+\emph{frozen} trunk (AdamW $10^{-4}$ / $10^{-4}$, cosine annealing, 25
+epochs, classification batches only), placing the head near its conditional
+minimum before the trunk is touched. \emph{Phase J} then unfreezes the trunk
+and jointly fine-tunes on the interleaved batches at $10^{-5}$, an order of
+magnitude below the ERM regimen, with cosine annealing, at most 15 epochs,
+patience 4, seed 42. Checkpoint selection maximises source validation AUROC
+\emph{subject to a segmentation guard}: TN3K-validation Dice
+$\geq 0.8066$ (the pre-registered non-collapse gate constant plus a $0.01$
+margin); the test split never participates in selection. The guard exists
+because protocol v1 failed this gate. Under a single-stage joint fine-tune
+at $10^{-4}$ with AUROC-only
+selection, the classification gradient of the freshly initialised head rotated the
+shared encoder from the first epoch: saved-model TN3K-test Dice was 0.6686
+against a gate of 0.7966. The harness itself was validated by a
+pristine-checkpoint
+control that reproduced the locked reference exactly. Should no joint epoch
+satisfy the guard, the best-Dice state is retained for diagnosis and the
+non-collapse gate is allowed to fail. The joint phase is then reported as a
+negative result rather than analysed. Both arms share identical
+batch/augmentation streams (\texttt{set\_seed(42)} first, warmup consuming a
+fixed, data-independent number of draws per arm) and differ only in the
+classification pooling region. Evaluation
+re-uses the locked caches wherever the protocol permits. The in-domain
+family $G$ (pre-declared, Bonferroni within family) comprises: G1
+$\mathrm{JOINTg}-\mathrm{ERM}$ AUROC (is the in-domain fine-tuning gap
+closed?), G2 $\mathrm{JOINTg}-\mathrm{R1p}$ (frozen versus joint
+grounding), G3 $\mathrm{JOINTg}-\mathrm{JOINT\textrm{-}img}$ (grounding
+versus multi-tasking), G4 sensitivity@spec90 $\mathrm{JOINTg}-\mathrm{ERM}$
+(raw-raw). The joint model then enters the frozen external battery defined by the main-text transfer protocol,
+%% SM-EDIT: cross-document pointer (main-text target). with thresholds and
+temperature fitted on its own TN5000 validation probabilities only.
+The TNUI-family operating-point behaviour (pre-specified as primary) and
+the DDTI descriptive rows are reported exactly as for earlier models.
+Acceptance gates fixed here: the TN5000 manifest must re-derive the locked
+split sizes; the joint segmentation branch must not collapse relative to
+the locked Stage-1 references; and the ERM sanity gate against the locked
+ERM probabilities applies unchanged. A pre-registered uncertainty
+component derives predictive entropy and probability margins from the
+calibrated probabilities and reports coverage-versus-malignant-FNR
+selective-prediction curves on the source test and the pre-declared pool.
+
+
+\noindent\emph{S4.2 Phase-5 audit gate: full A1--A5 mechanics AND the verbatim pre-registered family J definition (referenced from main text, `Case-level external validation on ThyUS2Path'; gate thresholds, the WITHHELD rule, the amendment date, and the J1 primary contrast are retained in the main text).}
+
+\paragraph{Audit-gated inference (A1--A5).} No metric cell may run before
+the audit gate, and no inferential statement is unsealed before the
+licence. The checks execute in order:
+\begin{description}
+  \item[A1 label coverage.] A two-table per-batch prefix join maps each
+  image identifier (first underscore-delimited token, namespaced by
+  batch to forestall cross-batch collisions) onto its batch's label
+  table (\texttt{histo\_label} $\in \{0, 1\}$). Per-batch coverage must
+  reach 95\%, and the surviving join is cross-checked against the
+  corpus's own image map.
+  \item[A2 case assembly.] A case is the set of images sharing its
+  batch-namespaced patient key. The primary analytic unit is the case,
+  scored by the unweighted mean of its per-image calibrated
+  probabilities; a first-listed-image view is pre-declared as a
+  descriptive sensitivity analysis.
+  \item[A3 overlap screening.] SHA-256 exact hashing plus perceptual-hash
+  near-duplicate detection against every support or training pool
+  (TN5000, TNUI-2021, the TN3K training pool); a single matching image
+  excludes the \emph{whole} case (conservative policy).
+  \item[A4 cohort gates.] Minimum assembled size (300 cases) and a
+  malignancy-prevalence window of $[0.20, 0.85]$.
+  \item[A5 polarity attestation.] The operator inspects a seeded grid of
+  benign- and malignant-labelled images against the corpus documentation
+  and attests that label polarity matches ultrasonic appearance; only
+  then is the inference licence set.
+\end{description}
+The pre-registered family is \emph{computed} under the sealed discipline
+but reported as \textsc{withheld} (descriptive statistics only) unless
+A1--A4 pass computationally \emph{and} A5 is attested. The licence
+upgrade flips the significance column only and recomputes nothing. The
+amendment fixing the two-table join, the case-mean primary unit, and the
+conservative whole-case exclusion policy was adopted 2026-08-22, strictly
+before any target-side forward pass.
+
+\paragraph{Pre-registered family J} (case level, 5{,}000 paired bootstrap
+resamples, two-sided empirical $p$, Bonferroni
+$\alpha = 0.05/4 = 0.0125$; raw-raw convention; thresholds and
+temperatures from TN5000 validation only, nothing refitted):
+\textbf{J1} sensitivity@spec90 R1p $-$ ERM, the primary external
+operating-point replication, with McNemar discordants on malignant
+cases; \textbf{J2} AUROC R1p $-$ ERM (rank transfer, secondary);
+\textbf{J3} sensitivity@spec90 JOINT-g $-$ R1p (external analogue of
+H2); \textbf{J4} AUROC R1p $-$ R0 (grounding versus whole image).
+Oracle regimes (R1g/R2g) are excluded by pre-declaration because
+ThyUS2Path provides no lesion annotation.
+
+
+\noindent\emph{S4.3 Phase-6 explainability battery: full axis specifications, perturbation recipes, cohort paragraph, and the verbatim pre-registered family K definition (referenced from main text, `Pre-registered lesion-grounded explainability battery'; axis summaries, the ELA reproduction assertion, the cascade self-gate constant, cohort sizes, and the K1 primary contrast are retained in the main text).}
+
+\paragraph{Axes.} (a) \emph{Plausibility}: explanation concentration in
+the TN5000 expert box --- the \emph{localisation ratio} = in-box
+explanation share divided by box-area share (segmentation-region
+precision for descriptor heads; CAM energy for ERM), plus descriptive
+pointing-game hits. The ThyUS2Path side is descriptive only (predicted-mask
+agreement; no GT). (b) \emph{Faithfulness}: deletion (primary) and
+insertion curves under a per-image Gaussian-blur baseline
+($\sigma = 8$, 8 steps), raw probabilities (raw-raw convention), masks
+held fixed at the original prediction (isolated descriptor sensitivity),
+and one seeded random pixel ordering per image as control. The
+\emph{faithfulness gap} is the trapezoidal area difference between the
+random-ordering and attribution-guided curves. (c) \emph{Stability}:
+seeded Gaussian noise ($\sigma = 0.02$) and affine jitter ($\pm 3^{\circ}$,
+$\pm 5$\,px) with the full pipeline (masks) recomputed; Spearman
+correlation of the clean and perturbed CAMs (affine maps inverse-warped
+before comparison). (d) \emph{Randomisation sanity}: cascading
+reinitialisation --- R1p head weights; ERM fc $\to$ fc+layer4 $\to$
+fc+layer4+layer3 --- on a seeded 160-image probe; the battery self-gates:
+mean $\lvert\rho\rvert < 0.2$ at the final cascade stage, asserted.
+
+\paragraph{Cohorts.} TN5000-test (canonical Phase-3 chain, $n{=}950$, 693
+malignant; expert boxes as GT) and a seeded ThyUS2Path case-first-image
+panel ($n{=}600$, drawn from the licensed Phase-5 839-case manifest).
+Metrics on this panel are label-free, so the battery is independent of
+the Phase-5 licence.
+
+\paragraph{Pre-registered family K} (image level; 5{,}000 paired bootstrap
+resamples; two-sided empirical $p$; Bonferroni $\alpha = 0.05/4 = 0.0125$;
+seed 42): \textbf{K1} GT-localisation ratio R1p $-$ ERM on TN5000-test
+(PRIMARY plausibility); \textbf{K2} deletion faithfulness gap R1p $-$ ERM
+(TN5000-test); \textbf{K3} deletion faithfulness gap R1p $-$ ERM
+(ThyUS2Path panel; label-free); \textbf{K4} deletion faithfulness gap
+JOINT-g $-$ JOINT-img (TN5000-test; explanation-space mirror of G3).
+Everything else --- insertion curves, pointing games, CAM-variant
+robustness, stability, cascade curves --- is descriptive with
+pre-declared expectations.
+
+
+\noindent\emph{S4.4 External classification transfer protocol: full gate specifications, tolerances, replication gate, and pooling/power policy (referenced from main text, `External classification transfer protocol'; the two-sentence gate-logic summary is retained in the main text).}
+
+\paragraph{Frozen objects.}
+Encoder, fusion decoder, fixed support episode (identifier-asserted against
+the archive), descriptor code, head weights, operating thresholds, and
+temperatures are byte-identical to the source phase.
+
+\paragraph{Tolerance gates (checked before any external table).}
+\begin{enumerate}
+  \item \textbf{Support-episode gate:} episode identifiers must equal the
+  archived identifiers (seed-drift assert).
+  \item \textbf{Head-provenance gate:} heads are loaded from the locked
+  phase caches. Where a head must be retrained from cached features under
+  the identical protocol (the random-number generator, RNG, is not exactly
+  reproducible), its source validation AUROC must lie within $\pm 0.01$ of
+  the locked value; otherwise the run stops.
+  \item \textbf{ERM sanity gate:} the baseline's source-test AUROC,
+  recomputed from the archived probabilities/checkpoint, must match the
+  locked value within $\pm 0.002$.
+  \item \textbf{Segmentation-QC gate:} external predicted-mask Dice is
+  reported against the locked Phase-2 zero-shot references before any
+  classification analysis.
+\end{enumerate}
+
+\paragraph{Replication gate (governs pooling).}
+When a previously locked external cohort is recomputed in a later session,
+the new table must match the locked table within absolute tolerance
+($0.0015$ with cached heads; $0.01$ with tolerated retrains) on every row.
+If any row drifts beyond tolerance, all analyses depending on pooling are
+\emph{withheld} (flagged \texttt{POOLED\_OK=False}; the sections report
+withholding rather than crashing or silently recomputing).
+
+\paragraph{Pooling policy.}
+Exactly one pool is pre-declared: TNUI-2021 test + validation, with its own
+test family (P1--P5, per-family Bonferroni). Later cohorts (TNUI-2021
+train, DDTI) are analysed as individual families (E, F) with their own
+Bonferroni screens. Cross-cohort evidence matrices (AUROC and
+operating-point sensitivity across all cohorts) are descriptive only and
+carry no inferential claims beyond the pre-declared families.
+
+\paragraph{Power policy.}
+External cohorts with very few benign cases yield wide intervals; the
+pre-declared remedies are direction-consistency reporting across cohorts
+and the single pooled analysis. Underpowered individual tests are labelled
+as such rather than narrated as effects.
+
+
+\section{Reproducibility artefact manifest}\label{sm:repro}
+
+\noindent\emph{Referenced from main text, `Reproducibility and implementation controls'.}
+
+Released or documented:
+
+\begin{itemize}
+  \item dataset versions and access locations;
+  \item clean manifests re-derived from raw files and hash-verified
+  against the audit manifests;
+  \item duplicate-drop lists;
+  \item the TN5000 manifest with locked split sizes and per-split
+  prevalence;
+  \item preprocessing and augmentation configurations;
+  \item episode manifests, including the archived fixed support episode;
+  \item feature-bank caches with quality-control fields;
+  \item cached model probabilities for every reported table;
+  \item label parsers and the DDTI vote profile;
+  \item the TNUI label-polarity record (assumption-with-evidence);
+  \item locked result tables cited by later phases as tolerance
+  references;
+  \item the audit-hash manifest of every external phase;
+  \item seeds and software versions;
+  \item model checkpoints (the Stage 1 reference checkpoint and the
+  fusion decoder are versioned with the repository artefacts); and
+  \item scripts for metrics and statistics.
+\end{itemize}
+
+\section{Algorithmic summary}\label{sm:algorithm}
+
+\noindent\emph{Algorithm S1, referenced from main text, `Algorithmic summary'.}
+
+\begin{algorithm}[!ht]
+\caption{Lesion-Grounded Few-Shot Segmentation--Classification Framework}
+\label{alg:lgpm}
+\begin{algorithmic}[1]
+\Require Source segmentation domain with masks; pathology-labelled source
+classification domain; external cohorts; budgets $K_m,K_c$; query counts;
+seeds
+\Ensure Segmentation masks; malignancy predictions; calibration and
+operating points; explanations
+\State Hash and de-duplicate images; rebuild and verify manifests; group by
+patient/nodule where identifiers exist.
+\State \textbf{Stage 1:} Train the supervised ResNet34-UNet reference on the
+source training pool (Tversky objective, EMA, val-only threshold sweep,
+frozen threshold).
+\State \textbf{Stage 2:} Freeze the encoder; train the fusion decoder
+episodically on source episodes with nested budgets and joint augmentation.
+\State Compute multi-scale fg/bg prototypes
+(the main-text multi-scale foreground/background prototype equations);
+%% SM-EDIT: cross-document pointer (main-text target).
+predict query masks via the main-text query-mask decoder equation or the direct variant
+%% SM-EDIT: cross-document pointer (main-text target)..
+\State Evaluate in-domain, zero-shot, and mask-shot segmentation over 200
+episodes each, all budgets on matched queries; bootstrap episode means.
+\State \textbf{Stage 3:} Archive the fixed support episode; segment all
+classification cohorts zero-shot; build and cache the five descriptor
+regimes; train linear heads, the prototype budget sweep, and the ERM
+baseline on the source domain only.
+\State \textbf{Stage 4:} Freeze per-model temperature and the
+specificity-$0.90$ operating threshold from source validation (raw-raw
+convention).
+\State \textbf{Stage 5:} Apply the frozen pipeline to each external cohort;
+enforce tolerance, sanity, and replication gates; run the pre-declared
+paired families and the single pre-declared pool.
+\State \textbf{Phase 4 (pre-registered):} joint partial-supervision
+fine-tune; family $G$ in-domain; external battery under the same gates.
+\State Evaluate lesion alignment, faithfulness, stability, and randomisation
+of explanations on internal and external cases.
+\end{algorithmic}
+\end{algorithm}
+
+%======================================================================
+% sm_results.tex - Supplementary Results (LG-PM 16-page split).
+% All tables VERBATIM from results_lgpm_draft.tex (whole tables), or
+% verbatim ROWS relocated from the pre-registered family tables
+% (assembler: build_sm_results.py; commission 2026-08-23, stage 2).
+% Inclusion order FIXES the SM table numbers S1..S22 cited from the
+% compressed main text (sec16_results.tex).
+%======================================================================
+
+\section{Supplementary results}\label{sm:results}
+
+\noindent\emph{This section preserves, verbatim, the per-cohort and
+operational tables displaced from the 16-page main text, and -- in
+Tables S5 and S22 -- the secondary and tertiary pre-registered
+contrasts relocated row-for-row from the main-text family tables.
+Each block notes the main-text subsection that cites it.}
+
+\noindent\emph{Table S1, referenced from main text, `Cohorts, audits, and frozen operating conventions'.}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Frozen-pipeline segmentation QC in classification phases (locked,
+Phase-1/2 pipeline at the fixed $K_m{=}20$ support episode; Dice vs cohort
+masks at the locked 0.5 binarisation). ---: not available --- predicted-mask
+area was not recorded by the Phase-3d/3e banks (Dice/empty only), and the
+TNUI-train empty-rate line was not archived; descriptive QC only, both
+recoverable on re-run.}
+\label{tab:segqc}
+\begin{tabular}{lccc}
+\toprule
+Cohort & mean Dice & empty-mask rate & mean mask area \\
+\midrule
+TN5000 (all splits) & n/a (expert boxes; no pixel masks) & 1.1\% val / 1.2\% test & 0.037--0.038 \\
+TNUI-2021 test  & 0.7046 & 0.0\% & 0.033 \\
+TNUI-2021 val   & 0.7307 & 1.5\% & --- \\
+TNUI-2021 train & 0.7241 & --- & --- \\
+DDTI (labelled subset) & 0.6132 & 3.7\% & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S2, referenced from main text, `Supervised segmentation reference and external gap'.}
+
+\begin{table}[!ht]
+\centering\footnotesize
+\caption{Phase-1 supervised segmentation reference (locked; from
+\texttt{aggregate\_metrics.csv}). 95\% case-bootstrap CIs for Dice; HD95 is the
+median over cases with both masks non-empty (n given; letterboxed
+$384^2$ pixels). TNUI per-split TTA Dice: train 0.7894, val 0.8029.}
+\label{tab:phase1}
+\begin{tabular}{llccccc}
+\toprule
+Set & TTA & Dice (95\% CI) & IoU & Sens & Prec & HD95 med (n) \\
+\midrule
+TN3K test ($n{=}614$) & yes & 0.8466 (0.8336--0.8589) & 0.7603 & 0.9108 & 0.8240 & 11.16 (613) \\
+                      & no  & 0.8441 (0.8310--0.8565) & 0.7572 & 0.9149 & 0.8165 & 11.31 (613) \\
+TNUI-2021 all ($n{=}1371$) & yes & 0.7877 (0.7778--0.7972) & 0.6791 & 0.9117 & 0.7329 & 9.25 (1366) \\
+                      & no  & 0.7766 (0.7663--0.7867) & 0.6665 & 0.9150 & 0.7160 & 10.00 (1368) \\
+TNUI-2021 test ($n{=}138$) & yes & 0.7464 (0.7098--0.7805) & 0.6315 & 0.9048 & 0.6837 & 10.63 (138) \\
+                      & no  & 0.7367 (0.6977--0.7713) & 0.6211 & 0.9072 & 0.6699 & 11.01 (138) \\
+DDTI ($n{=}635$)      & yes & 0.7396 (0.7213--0.7561) & 0.6288 & 0.8324 & 0.7327 & 22.00 (629) \\
+                      & no  & 0.7431 (0.7258--0.7589) & 0.6301 & 0.8471 & 0.7252 & 23.22 (629) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S3, referenced from main text, `Few-shot support-conditioned segmentation'.}
+
+\begin{table}[!ht]
+\centering\footnotesize
+\caption{Phase-2 direct (parameter-free) variant, query Dice (locked). IoU for
+the decoder at $K{=}20$: 0.6873 / 0.5808 / 0.5471 / 0.5598 / 0.5602 across the
+five conditions in table order.}
+\label{tab:phase2_direct}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Condition & $K{=}1$ & $K{=}5$ & $K{=}10$ & $K{=}20$ \\
+\midrule
+TN3K test (in-domain)  & 0.6205 (0.5987--0.6432) & 0.6778 (0.6642--0.6911) & 0.6788 (0.6656--0.6922) & 0.6751 (0.6626--0.6877) \\
+TNUI test (zero-shot)  & 0.4744 (0.4510--0.4975) & 0.4943 (0.4727--0.5161) & 0.4964 (0.4762--0.5170) & 0.4985 (0.4795--0.5174) \\
+TNUI test ($K$-shot)   & 0.4906 (0.4657--0.5144) & 0.5965 (0.5823--0.6104) & 0.6175 (0.6040--0.6297) & 0.6277 (0.6156--0.6399) \\
+DDTI (zero-shot)       & 0.5111 (0.4888--0.5332) & 0.5637 (0.5480--0.5787) & 0.5665 (0.5519--0.5800) & 0.5682 (0.5544--0.5813) \\
+DDTI ($K$-shot target) & 0.5789 (0.5616--0.5965) & 0.6429 (0.6323--0.6545) & 0.6507 (0.6398--0.6624) & 0.6529 (0.6418--0.6642) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\noindent\emph{Table S4, referenced from main text, `In-domain classification with frozen descriptors'.}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{TN5000 test classification (locked; $n{=}950$, malignant 693).
+ECE 15-bin; Brier and ECE-post use validation-fitted temperature;
+sens@spec90 is evaluated at the frozen raw validation threshold (raw-raw
+convention). CIs: 95\% case bootstrap (2,000 replicates).}
+\label{tab:phase3}
+\begin{tabular}{lcccccc}
+\toprule
+Model & AUROC (95\% CI) & AUPRC & sens@spec90 & Brier & ECE pre/post & $T_{\mathrm{val}}$ \\
+\midrule
+ERM whole-image (ResNet34 ft) & 0.9401 (0.9232--0.9553) & 0.9738 & 0.8023 & 0.0878 & 0.0893/0.0634 & 1.969 \\
+R0 image | linear             & 0.8534 (0.8271--0.8798) & 0.9358 & 0.6479 & 0.1520 & 0.1278/0.1244 & 0.900 \\
+R1p lesion | linear           & 0.8902 (0.8670--0.9122) & 0.9519 & 0.7273 & 0.1515 & 0.1788/0.1734 & 0.847 \\
+R2p lesion+ring | linear      & 0.8829 (0.8584--0.9061) & 0.9464 & 0.6869 & 0.1538 & 0.1721/0.1705 & 0.956 \\
+R1g GT box | linear (oracle)  & 0.9105 (0.8899--0.9299) & 0.9635 & 0.8254 & 0.1260 & 0.1339/0.1302 & 0.927 \\
+R2g GT box+ring | linear (oracle) & 0.9029 (0.8807--0.9239) & 0.9569 & 0.7763 & 0.1449 & 0.1750/0.1721 & 0.927 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S5: secondary and tertiary pre-registered contrasts
+of families T, G, H, and J, relocated row-for-row from main-text Tables
+`Phase-3b paired tests', `Phase-4 pre-registered families', and
+`Phase-5 pre-registered family J' (referenced from the corresponding
+main-text subsections). Cohort, resample count, and Bonferroni bar per
+family follow each family header row; conventions as in the main-text
+tables ($\Delta$ = A$-$B; empirical $p$ floored at $p{<}0.0004$).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Supplementary secondary/tertiary pre-registered contrasts
+(relocated rows; locked values). Family T: TN5000 test, 5,000 paired
+bootstrap resamples, $\alpha{=}0.0083$. Family G: in-domain TN5000
+test, 5,000 resamples, $\alpha{=}0.0125$. Family H: pooled TNUI
+test+val ($n{=}413$, 392 positives), 2,000 resamples,
+$\alpha{=}0.0167$. Family J: ThyUS2Path case level ($n{=}839$, 522
+malignant), 5,000 resamples, $\alpha{=}0.0125$.}
+\label{tab:sm_secondaries}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{clllccl}
+\toprule
+Test & Contrast & Metric & $\Delta$ (95\% CI) & $p$ & Sig. & Question \\
+\midrule
+\multicolumn{7}{l}{\textbf{Family T (secondaries), in-domain TN5000 test}}\\
+T3 & R1g $-$ R1p & AUROC & +0.0202 (0.0056, 0.0349) & 0.0048 & YES & seg-error cost $\approx$2 pts \\
+T4 & R1p $-$ R2p & AUROC & +0.0074 ($-$0.0023, 0.0176) & 0.1388 & no & ring adds nothing (H6 null) \\
+T5 & R1p $-$ ERM & sens@spec90 & $-$0.0749 ($-$0.1126, $-$0.0390) & $<$0.0004 & YES & ERM wins op.\ point \\
+T6 & R1g $-$ R1p & sens@spec90 & +0.0982 (0.0693, 0.1270) & $<$0.0004 & YES & oracle $>$ predicted ROI \\
+\multicolumn{7}{l}{McNemar (T5): ERM-right/R1p-wrong 114 vs R1p-right/ERM-wrong 62, $\chi^2 = 14.78$.} \\
+\midrule
+\multicolumn{7}{l}{\textbf{Family G (G2--G4), in-domain}}\\
+G2 & JOINT-g $-$ R1p & AUROC & $-$0.0205 ($-$0.0365, $-$0.0045) & 0.0124 & YES & joint vs frozen grounding --- frozen wins \\
+G3 & JOINT-g $-$ JOINT-img & AUROC & +0.1489 (0.1136, 0.1848) & $<$0.0004 & YES & grounding beats multi-tasking \\
+G4 & JOINT-g $-$ ERM & sens@spec90 & $-$0.2376 ($-$0.2785, $-$0.1962) & $<$0.0004 & YES & in-domain operating point --- ERM wins \\
+\multicolumn{7}{l}{McNemar (G4, test positives): JOINT-g-right/ERM-wrong 41 vs ERM-right/JOINT-g-wrong 206,}\\
+\multicolumn{7}{l}{$\chi^2 = 108.89$ ($p \ll 0.01$) --- $\approx$5:1 discordants against JOINT-g at the frozen point.}\\
+\multicolumn{7}{l}{\textbf{Family H (H2--H3), pooled TNUI test+val (external)}}\\
+H2 & JOINT-g $-$ R1p & sens@spec90 (pooled) & $-$0.0534 ($-$0.0969, $-$0.0102) & 0.011 & YES & frozen grounding transfers better \\
+H3 & JOINT-g $-$ ERM & AUROC (pooled) & $-$0.0109 ($-$0.1442, 0.1322) & 0.858 & no & external rank (secondary) --- null \\
+\midrule
+\multicolumn{7}{l}{\textbf{Family J (J2--J4), ThyUS2Path case level (external)}}\\
+J2 & R1p $-$ ERM      & AUROC       & $-$0.0401 ($-$0.0801, $-$0.0015) & 0.0436 & no  & rank transfer --- null at family bar \\
+J3 & JOINT-g $-$ R1p  & sens@spec90 & $-$0.0978 ($-$0.1264, $-$0.0709) & $<$0.0004 & YES & frozen grounding transfers better (H2 analogue) \\
+J4 & R1p $-$ R0       & AUROC       & $-$0.0322 ($-$0.0709, 0.0075)  & 0.1104 & no  & grounding vs whole image --- null \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\noindent\emph{Table S6, referenced from main text, `In-domain classification with frozen descriptors'.}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Frozen operating points (locked): per-model thresholds chosen on raw
+validation probabilities at specificity $\geq 0.90$, then applied unchanged to
+the test split (raw-raw convention). The val$\to$test sensitivity transfer gap
+is smallest for the oracle and grounded heads (R1g $+0.60$ pts, R1p $-1.71$
+pts) and largest for ERM ($-5.33$ pts), foreshadowing the external
+operating-point behaviour.}
+\label{tab:spec90}
+\begin{tabular}{lcccc}
+\toprule
+Model & threshold (frozen) & val spec & val sens & test sens@spec90 \\
+\midrule
+ERM            & 0.9233 & 0.9052 & 0.8556 & 0.8023 \\
+R0 image       & 0.6708 & 0.9052 & 0.6417 & 0.6479 \\
+R1p lesion     & 0.5323 & 0.9052 & 0.7444 & 0.7273 \\
+R2p lesion+ring & 0.5789 & 0.9138 & 0.7278 & 0.6869 \\
+R1g GT box (oracle) & 0.5194 & 0.9052 & 0.8194 & 0.8254 \\
+R2g GT box+ring (oracle) & 0.4699 & 0.9052 & 0.8056 & 0.7763 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S7, referenced from main text, `In-domain classification with frozen descriptors' (error-propagation quartiles).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Error propagation (RQ4, locked; TN5000 test, $n{=}950$):
+oracle-minus-predicted AUROC gap within predicted-mask-confidence quartiles
+(237--238 cases each). gap = AUROC(GT-ROI) $-$ AUROC(pred-ROI); positive =
+oracle better. The gap shows no monotone confidence relationship and is
+descriptively largest at the highest confidence (single split; no
+per-quartile CIs).}
+\label{tab:propagation}
+\begin{tabular}{lcccc}
+\toprule
+Confidence quartile & $n$ & AUROC pred-ROI & AUROC GT-ROI & gap \\
+\midrule
+Q1 (low)  & 238 & 0.8871 & 0.9081 & +0.0209 \\
+Q2        & 237 & 0.8720 & 0.8834 & +0.0114 \\
+Q3        & 237 & 0.8811 & 0.8769 & $-$0.0042 \\
+Q4 (high) & 238 & 0.8433 & 0.9022 & +0.0589 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S8, referenced from main text, `In-domain classification with frozen descriptors' (label-budget sweep).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Class-prototype label-budget sweep (locked; TN5000 test).
+Cosine-margin prototype classifier on frozen descriptors; AUROC mean $\pm$
+SD (SD to 3 d.p.) over 25 independent per-class label draws at each budget
+$K_c$; the \emph{all} row uses the full training split once (single draw).
+Grounded heads dominate the image budget at every $K$ and saturate by
+$K{=}50$; R0 does not.}
+\label{tab:protosweep}
+\begin{tabular}{lccccc}
+\toprule
+Budget $K_c$ & R0 image & R1p lesion & R2p lesion+ring & R1g GT box & R2g GT box+ring \\
+\midrule
+5   & 0.5058$\pm$0.050 & 0.5862$\pm$0.048 & 0.5778$\pm$0.044 & 0.6119$\pm$0.051 & 0.6066$\pm$0.033 \\
+10  & 0.5307$\pm$0.045 & 0.6190$\pm$0.043 & 0.6058$\pm$0.036 & 0.6477$\pm$0.053 & 0.6290$\pm$0.030 \\
+20  & 0.5398$\pm$0.044 & 0.6362$\pm$0.043 & 0.6246$\pm$0.037 & 0.6618$\pm$0.043 & 0.6484$\pm$0.032 \\
+50  & 0.5586$\pm$0.034 & 0.6383$\pm$0.037 & 0.6335$\pm$0.033 & 0.6570$\pm$0.033 & 0.6478$\pm$0.024 \\
+200 & 0.5827$\pm$0.032 & 0.6348$\pm$0.023 & 0.6294$\pm$0.023 & 0.6491$\pm$0.021 & 0.6441$\pm$0.015 \\
+all & 0.5917 & 0.6379 & 0.6313 & 0.6508 & 0.6462 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+{\footnotesize Support-sampling variance shrinks with budget
+($\sigma \approx 0.05$ at $K{=}5$ falling to $\approx 0.02$ at
+$K{=}200$). Absolute levels sit far below the linear heads'
+(0.59--0.66 vs 0.85--0.91), as expected for a cosine prototype
+rule on frozen descriptors.}
+\end{table}
+
+\noindent\emph{Table S9, referenced from main text, `External classification battery' (TNUI-2021 test; per-cohort family Tc).}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Phase-3c TNUI-test external classification (locked; $n{=}139$, 134
+malignant). Thresholds frozen from TN5000-val raw probabilities (raw-raw);
+Brier/ECE-post use source-val-fitted temperatures $T$ (frozen descriptors,
+tolerance-gated retrained heads). AUPRC is near-uninformative at prevalence
+0.964. External ECE is poor for \emph{every} model (0.24--0.43) ---
+prevalence-shift miscalibration. Shift = in-domain minus external AUROC.}
+\label{tab:phase3c}
+\begin{tabular}{lccccccc}
+\toprule
+Model & AUROC (95\% CI) & AUPRC & sens@spec90 & Brier & ECE pre/post & $T_{\mathrm{src\,val}}$ & shift \\
+\midrule
+ERM            & 0.5172 (0.3296--0.6937) & 0.9745 & 0.5373 & 0.1963 & 0.2427/0.2674 & 1.969 & 0.423 \\
+R0             & 0.5791 (0.3082--0.8154) & 0.9746 & 0.4104 & 0.3074 & 0.4318/0.4244 & 0.927 & 0.273 \\
+R1p            & 0.7119 (0.5612--0.8768) & 0.9871 & 0.6940 & 0.2036 & 0.3173/0.3060 & 0.847 & 0.177 \\
+R2p            & 0.6776 (0.3630--0.9058) & 0.9797 & 0.6493 & 0.2157 & 0.3377/0.3320 & 0.927 & 0.207 \\
+R1g (true mask)      & 0.8343 (0.7269--0.9270) & 0.9933 & 0.6716 & 0.2071 & 0.3183/0.3145 & 0.927 & 0.075 \\
+R2g (mask+ring)      & 0.8507 (0.7500--0.9448) & 0.9940 & 0.5000 & 0.2828 & 0.4175/0.4173 & 0.985 & 0.052 \\
+\midrule
+\multicolumn{8}{l}{Paired ($\alpha{=}0.01$; $n_{\mathrm{boot}}{=}4952$ for AUROC after discarding single-class}\\
+\multicolumn{8}{l}{resamples, 5000 for sens): T1c +0.1315 ($-$0.1208, 0.4187; $p{=}0.324$) underpowered-null;}\\
+\multicolumn{8}{l}{T2c $-$0.1940 ($-$0.4193, 0.0651; $p{=}0.117$) sign-flipped vs in-domain T2, CI crosses 0;}\\
+\multicolumn{8}{l}{T3c +0.1230 (0.0000, 0.2896; $p{=}0.049$) nominal only; T4c $-$0.3170 ($-$0.4762, $-$0.1423;}\\
+\multicolumn{8}{l}{$p{=}0.0004$) \textbf{YES}; T5c $-$0.1570 ($-$0.2537, $-$0.0597; $p{=}0.0028$) \textbf{YES}.}
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S10, referenced from main text, `External classification battery' (TNUI-2021 val and the pre-declared pool; families Td and P).}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Phase-3d: TNUI-val ($n{=}274$; 258 malignant/16 benign) and the
+pre-declared pooled TNUI test+val ($n{=}413$; 392/21). Locked thresholds from
+TN5000-val (raw-raw). Val-panel ECE-pre range 0.24--0.42; pooled panel reports
+post-temperature ECE. Replication gate vs locked 3c: zero drift.}
+\label{tab:phase3d}
+\begin{tabular}{lccccc}
+\toprule
+Model & AUROC (95\% CI) & AUPRC & sens@spec90 & Brier & ECE post \\
+\midrule
+\multicolumn{6}{l}{\emph{TNUI-2021 val}}\\
+ERM  & 0.6237 (0.4765--0.7670) & 0.9617 & 0.5504 & 0.1879 & 0.2497 \\
+R0   & 0.5901 (0.3824--0.7877) & 0.9338 & 0.4031 & 0.3019 & 0.4162 \\
+R1p  & 0.5775 (0.3895--0.7484) & 0.9422 & 0.6512 & 0.2434 & 0.3278 \\
+R2p  & 0.6008 (0.4193--0.7649) & 0.9520 & 0.6318 & 0.2196 & 0.3121 \\
+R1g (true mask)  & 0.6126 (0.4516--0.7640) & 0.9557 & 0.6434 & 0.2475 & 0.3112 \\
+R2g (mask+ring)  & 0.5770 (0.4111--0.7370) & 0.9536 & 0.5271 & 0.3059 & 0.3902 \\
+\midrule
+\multicolumn{6}{l}{\emph{Pooled TNUI test\,+\,val (single pre-declared pool)}}\\
+ERM  & 0.5969 (0.4756--0.7106) & 0.9660 & 0.5459 & 0.1907 & 0.2557 \\
+R0   & 0.5850 (0.4284--0.7370) & 0.9505 & 0.4056 & 0.3038 & 0.4172 \\
+R1p  & 0.6079 (0.4726--0.7385) & 0.9564 & 0.6658 & 0.2300 & 0.3156 \\
+R2p  & 0.6144 (0.4725--0.7519) & 0.9615 & 0.6378 & 0.2183 & 0.3188 \\
+R1g (true mask)  & 0.6635 (0.5414--0.7780) & 0.9677 & 0.6531 & 0.2339 & 0.3111 \\
+R2g (mask+ring)  & 0.6340 (0.5031--0.7591) & 0.9661 & 0.5179 & 0.2981 & 0.3953 \\
+\midrule
+\multicolumn{6}{l}{Pooled paired family ($\alpha{=}0.01$, 5000 resamples): P1 R1p$-$R0 +0.0227 ($-$0.0718,}\\
+\multicolumn{6}{l}{0.1234; $p{=}0.662$) no; P2 ERM$-$R1p $-$0.0118 ($-$0.1264, 0.0991; $p{=}0.852$) no;}\\
+\multicolumn{6}{l}{P3 R1g$-$R1p +0.0554 ($-$0.0077, 0.1293; $p{=}0.096$) no; P4 ERM$-$R1g $-$0.0672}\\
+\multicolumn{6}{l}{($-$0.1822, 0.0382; $p{=}0.224$) no; P5 ERM$-$R1p sens $-$0.1201 ($-$0.1811, $-$0.0612;}\\
+\multicolumn{6}{l}{$p{<}0.0004$) \textbf{YES} --- the 3c operating-point inversion replicates across cohorts.}
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S11, referenced from main text, `External classification battery' (DDTI and TNUI-2021 train; families F and E).}
+
+\begin{table}[!ht]
+\centering\footnotesize
+\caption{Phase-3e arms (locked): DDTI XML-labelled subset ($n{=}189$;
+145/44) and TNUI-train ($n{=}966$; 915/51). Conventions as in
+Table~\ref{tab:phase3d}. DDTI is at chance for every model, with true-mask
+oracle rows \emph{below} 0.5 --- burned-in acquisition annotations are a
+documented confound.}
+\label{tab:phase3e}
+\begin{tabular}{lccccc}
+\toprule
+Model & AUROC (95\% CI) & AUPRC & sens@spec90 & Brier & ECE post \\
+\midrule
+\multicolumn{6}{l}{\emph{DDTI (independent institution)}}\\
+ERM  & 0.4746 (0.3729--0.5740) & 0.7675 & 0.4828 & 0.2704 & 0.2699 \\
+R0   & 0.5116 (0.4196--0.6034) & 0.7923 & 0.1724 & 0.4174 & 0.4364 \\
+R1p  & 0.4967 (0.4059--0.5844) & 0.7874 & 0.3379 & 0.3874 & 0.3864 \\
+R2p  & 0.5017 (0.4057--0.5909) & 0.7928 & 0.3034 & 0.3696 & 0.3559 \\
+R1g (true mask)  & 0.4216 (0.3315--0.5066) & 0.7668 & 0.4276 & 0.3940 & 0.3927 \\
+R2g (mask+ring)  & 0.4143 (0.3210--0.5020) & 0.7435 & 0.2759 & 0.4334 & 0.4263 \\
+\midrule
+\multicolumn{6}{l}{\emph{TNUI-train (heterogeneity probe)}}\\
+ERM  & 0.5936 (0.5140--0.6706) & 0.9604 & 0.5519 & 0.1987 & 0.2593 \\
+R0   & 0.5472 (0.4556--0.6407) & 0.9505 & 0.4230 & 0.3104 & 0.4108 \\
+R1p  & 0.6316 (0.5491--0.7160) & 0.9633 & 0.6776 & 0.2151 & 0.2968 \\
+R2p  & 0.6441 (0.5714--0.7170) & 0.9698 & 0.6404 & 0.2136 & 0.2978 \\
+R1g (true mask)  & 0.6459 (0.5603--0.7301) & 0.9643 & 0.6656 & 0.2248 & 0.3036 \\
+R2g (mask+ring)  & 0.6078 (0.5222--0.6953) & 0.9605 & 0.5148 & 0.3011 & 0.3940 \\
+\midrule
+\multicolumn{6}{l}{E family (DDTI, $\alpha{=}0.01$, 5000 resamples): E1 R1p$-$R0 $-$0.0162 ($-$0.1064,}\\
+\multicolumn{6}{l}{0.0768; $p{=}0.724$); E2 ERM$-$R1p $-$0.0215 ($-$0.1220, 0.0823; $p{=}0.676$); E3 R1g$-$R1p}\\
+\multicolumn{6}{l}{$-$0.0749 ($-$0.1498, $-$0.0006; $p{=}0.048$) nominal only --- oracle \emph{worse} than}\\
+\multicolumn{6}{l}{predicted ROI on DDTI; E4 ERM$-$R1g +0.0534 ($-$0.0407, 0.1473; $p{=}0.273$);}\\
+\multicolumn{6}{l}{\textbf{E5 ERM$-$R1p sens +0.1456 (0.0621, 0.2345; $p{=}0.0012$) YES} --- operating-point}\\
+\multicolumn{6}{l}{inversion on the independent cohort.}\\
+\multicolumn{6}{l}{F family (TNUI-train): F1 R1p$-$R0 +0.0846 (0.0083, 0.1642; $p{=}0.025$) nominal-}\\
+\multicolumn{6}{l}{positive; F2 $-$0.0381 ($p{=}0.326$); F3 +0.0144 ($p{=}0.566$); F4 $-$0.0525 ($p{=}0.222$);}\\
+\multicolumn{6}{l}{\textbf{F5 ERM$-$R1p sens $-$0.1259 ($-$0.1628, $-$0.0885; $p{<}0.0004$) YES} --- the grounded}\\
+\multicolumn{6}{l}{operating-point advantage replicates in the third TNUI cohort.}
+\end{tabular}
+\end{table}
+
+\noindent\emph{Figure S1, referenced from main text, `External
+classification battery' (external verdict paragraph).}
+
+% FIG 3 float env [H] -- generated from figure_captions.tex; do not hand-edit
+\begin{figure}[H]
+\centering
+\includegraphics{figures/fig3_operating_points.pdf}
+\caption{\textbf{The operating point is the unit of transfer.}
+Sensitivity at each model's frozen specificity-$\geq$0.90 threshold
+across cohorts (image level except ThyUS2Path, which aggregates to case
+level under the audit-gated protocol). Fine-tuned ERM leads in-domain
+but collapses under shift (0.802 to 0.013 on ThyUS2Path); the grounded
+frozen head (R1p) degrades least on every external cohort except the
+documented DDTI counterexample and retains the lead at case level
+(0.159 vs 0.013; McNemar 77 vs 1 $p{<}0.0004$).}
+\label{fig:operating_points}
+\end{figure}
+
+
+
+\noindent\emph{Table S12, referenced from main text, `Joint partial-supervision fine-tuning' (in-domain levels).}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Phase-4 in-domain TN5000 test ($n{=}950$; locked, protocol v2).
+Columns as Table~\ref{tab:phase3}; JOINT-row CIs from this phase's
+2,000-replicate case bootstrap. Both segmentation non-collapse gates passed
+(TN3K-test Dice 0.8258 JOINT-g / 0.8165 JOINT-img against the
+$\geq 0.7966$ gate). Context rows are the locked Phase-3 values
+(Table~\ref{tab:phase3}).}
+\label{tab:phase4_indomain}
+\begin{tabular}{lcccccc}
+\toprule
+Model & AUROC (95\% CI) & AUPRC & sens@spec90 & Brier & ECE pre/post & $T_{\mathrm{val}}$ \\
+\midrule
+JOINT-g   & 0.8698 (0.8426--0.8939) & 0.9423 & 0.5642 & 0.1573 & 0.1971/0.1682 & 0.523 \\
+JOINT-img & 0.7207 (0.6824--0.7591) & 0.8460 & 0.1962 & 0.2103 & 0.2241/0.1927 & 0.200 \\
+\midrule
+\multicolumn{7}{l}{\emph{Locked Phase-3 context rows}}\\
+ERM whole-image (ResNet34 ft) & 0.9401 (0.9232--0.9553) & 0.9738 & 0.8023 & 0.0878 & 0.0893/0.0634 & 1.969 \\
+R0 image | linear             & 0.8534 (0.8271--0.8798) & 0.9358 & 0.6479 & 0.1520 & 0.1278/0.1244 & 0.900 \\
+R1p lesion | linear           & 0.8902 (0.8670--0.9122) & 0.9519 & 0.7273 & 0.1515 & 0.1788/0.1734 & 0.847 \\
+R2p lesion+ring | linear      & 0.8829 (0.8584--0.9061) & 0.9464 & 0.6869 & 0.1538 & 0.1721/0.1705 & 0.956 \\
+R1g GT box | linear (oracle)  & 0.9105 (0.8899--0.9299) & 0.9635 & 0.8254 & 0.1260 & 0.1339/0.1302 & 0.927 \\
+R2g GT box+ring | linear (oracle) & 0.9029 (0.8807--0.9239) & 0.9569 & 0.7763 & 0.1449 & 0.1750/0.1721 & 0.927 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S13, referenced from main text, `Joint partial-supervision fine-tuning' (external levels).}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Phase-4 external battery (locked; thresholds from each model's own
+TN5000-val raw probabilities, raw-raw convention). Segmentation QC for the
+JOINT-g trunk: external Dice 0.7201 (TNUI-test), 0.7651 (TNUI-val), 0.7543
+(TNUI-train), 0.6738 (DDTI; TN3K gate 0.8258); empty-mask rate $\leq 0.3\%$
+on every cohort. Frozen rows (ERM, R1p) replicate the locked Phase-3c/3d/3e
+external values exactly. $^\dagger$descriptive cohorts under the locked
+pooling policy (inference only within the pooled family, family H,
+the main-text Phase-4 family-G/H table).}
+\label{tab:phase4_external}
+\begin{tabular}{llcccccccc}
+\toprule
+ & & \multicolumn{4}{c}{AUROC} & \multicolumn{4}{c}{sens@spec90} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+Cohort & $n$ (mal) & ERM & JOINT-g & JOINT-img & R1p & ERM & JOINT-g & JOINT-img & R1p \\
+\midrule
+TNUI-test  & 139 (134) & 0.5172 & 0.7075 & 0.6493 & 0.7119 & 0.5373 & 0.6119 & 0.1343 & 0.6940 \\
+TNUI-val   & 274 (258) & 0.6237 & 0.5523 & 0.5337 & 0.5775 & 0.5504 & 0.6124 & 0.1434 & 0.6512 \\
+TNUI-train$^\dagger$ & 966 (915) & 0.5936 & 0.5845 & 0.5270 & 0.6316 & 0.5519 & 0.6251 & 0.1574 & 0.6776 \\
+DDTI$^\dagger$       & 189 (145) & 0.4746 & 0.5210 & 0.5296 & 0.4967 & 0.4828 & 0.2621 & 0.0414 & 0.3379 \\
+\midrule
+\multicolumn{10}{l}{Derived pooled (test+val) operating points: sens@spec90
+R1p $\approx 0.666$ $>$ JOINT-g $\approx 0.612$ $>$ ERM $\approx 0.546$.}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S14, referenced from main text, `Joint partial-supervision fine-tuning' (selective-prediction rows).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Phase-4 selective prediction (Gap 6; locked). Coverage = the
+most-confident-retained fraction at the frozen raw validation threshold
+(raw-raw; the validation-fitted temperature, $T{=}0.523$, supplies the
+confidence margin only --- no threshold or temperature is re-estimated).
+\textit{mal.\ FNR} = malignant false-negative rate among retained cases
+(equal to $1-$sens@spec90 row-wise); \textit{mal.\ share} = fraction of the
+cohort's malignant cases falling inside the retained confident set.
+Companion figure: \texttt{phase4\_selective.png} (both curves monotone in
+coverage).}
+\label{tab:phase4_selective}
+\begin{tabular}{lcccc}
+\toprule
+Coverage & $n$ retained & mal.\ FNR & sens@spec90 & mal.\ share retained \\
+\midrule
+\multicolumn{5}{l}{\emph{TN5000-test (in-domain, $n{=}950$, 693 malignant)}}\\
+100\% & 950 & 0.4358 & 0.5642 & 1.000 \\
+90\%  & 855 & 0.3673 & 0.6327 & 0.8918 \\
+80\%  & 760 & 0.2826 & 0.7174 & 0.7864 \\
+70\%  & 665 & 0.1602 & 0.8398 & 0.6667 \\
+60\%  & 570 & 0.1490 & 0.8510 & 0.5714 \\
+50\%  & 475 & 0.1262 & 0.8738 & 0.4690 \\
+\midrule
+\multicolumn{5}{l}{\emph{TNUI pooled (test+val; external, $n{=}413$, 392 malignant)}}\\
+100\% & 413 & 0.3878 & 0.6122 & 1.000 \\
+90\%  & 372 & 0.3220 & 0.6780 & 0.9031 \\
+80\%  & 330 & 0.2357 & 0.7643 & 0.8010 \\
+70\%  & 289 & 0.1594 & 0.8406 & 0.7041 \\
+60\%  & 248 & 0.1398 & 0.8602 & 0.6020 \\
+50\%  & 206 & 0.1026 & 0.8974 & 0.4974 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Figure S2, referenced from main text, `Joint
+partial-supervision fine-tuning' (selective-prediction paragraph).}
+
+% FIG 4 float env [H] -- generated from figure_captions.tex; do not hand-edit
+\begin{figure}[H]
+\centering
+\includegraphics{figures/fig4_selective_coverage.pdf}
+\caption{\textbf{Selective prediction is referral-shaped, in-domain and
+externally.} (a) Sensitivity at the frozen operating point as
+lower-confidence cases are referred (coverage = most-confident retained
+fraction; confidence from the validation-fitted temperature margin, no
+refitting). (b) Fraction of each cohort's malignant cases inside the
+retained set. At 50\% coverage, sensitivity reaches 0.874 (TN5000-test)
+and 0.897 (pooled TNUI), and 86--87\% of the frozen point's malignant
+misses fall into the referred half.}
+\label{fig:selective}
+\end{figure}
+
+
+
+\noindent\emph{Table S15, referenced from main text, `Case-level external validation on ThyUS2Path' (per-model case metrics).}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{ThyUS2Path case-level external battery (locked; $n{=}839$ cases,
+522 malignant; unit = case, score = mean of per-image calibrated
+probabilities; thresholds from each model's own TN5000-val raw
+probabilities, raw-raw convention). CIs: 2{,}000-replicate case
+bootstrap. Oracle regimes (R1g/R2g) not computable --- ThyUS2Path
+provides no lesion annotation (pre-declared exclusion). Companion file:
+\texttt{phase5\_main\_table.csv}.}
+\label{tab:phase5_main}
+\begin{tabular}{lcccccc}
+\toprule
+Model & AUROC (95\% CI) & AUPRC & sens@spec90 & Brier & ECE pre/post & $T_{\mathrm{val}}$ \\
+\midrule
+ERM whole-image (ResNet34 ft) & 0.5479 (0.5082--0.5868) & 0.6662 & 0.0134 & 0.2873 & 0.2813/0.2145 & 1.969 \\
+R0 image | linear             & 0.5400 (0.4992--0.5791) & 0.6408 & 0.0460 & 0.3486 & 0.3039/0.3139 & 0.927 \\
+R1p lesion | linear           & 0.5081 (0.4686--0.5494) & 0.6300 & 0.1590 & 0.3423 & 0.2761/0.2942 & 0.847 \\
+R2p lesion+ring | linear      & 0.5211 (0.4805--0.5619) & 0.6392 & 0.0881 & 0.3337 & 0.2771/0.2852 & 0.927 \\
+JOINT-g                       & 0.5112 (0.4715--0.5506) & 0.6342 & 0.0613 & 0.3200 & 0.2020/0.2607 & 0.523 \\
+JOINT-img                     & 0.4780 (0.4387--0.5201) & 0.6078 & 0.0153 & 0.3198 & 0.1506/0.2738 & 0.200 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S16, referenced from main text, `Case-level external validation on ThyUS2Path' (domain-shift matrix).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Domain shift (locked): TN5000-test AUROC (source) versus
+ThyUS2Path case-level AUROC (external). Source values are re-derived in
+the Phase-5 environment, not copied: ERM re-hits the locked 0.9401 sanity
+gate; R1p reproduces 0.8889 (within the 0.002 integrity tolerance of the
+locked 0.8902 reference); the JOINT rows match
+Table~\ref{tab:phase4_indomain} exactly.}
+\label{tab:phase5_shift}
+\begin{tabular}{lccc}
+\toprule
+Model & AUROC TN5000-test & AUROC ThyUS2Path & Shift drop \\
+\midrule
+ERM       & 0.9401 & 0.5479 & 0.3921 \\
+R0        & 0.8524 & 0.5400 & 0.3124 \\
+R1p       & 0.8889 & 0.5081 & 0.3808 \\
+R2p       & 0.8841 & 0.5211 & 0.3630 \\
+JOINT-g   & 0.8698 & 0.5112 & 0.3586 \\
+JOINT-img & 0.7207 & 0.4780 & 0.2427 \\
+\midrule
+\multicolumn{4}{l}{Derived mean shift drop: 0.3416 AUROC (range 0.2427--0.3921).}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S17, referenced from main text, `Case-level external validation on ThyUS2Path' (first-listed-image view).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{First-listed-image sensitivity view (descriptive; locked). Each
+case is scored by its first-listed image only --- identical frozen
+thresholds, no case aggregation --- demonstrating that the collapse of
+Table~\ref{tab:phase5_main} is not an artefact of the case-mean unit.}
+\label{tab:phase5_firstimage}
+\begin{tabular}{lcc}
+\toprule
+Model & AUROC (first image) & sens@spec90 (first image) \\
+\midrule
+ERM       & 0.5328 & 0.1648 \\
+R0        & 0.5006 & 0.1475 \\
+R1p       & 0.4877 & 0.2375 \\
+R2p       & 0.4965 & 0.2069 \\
+JOINT-g   & 0.4813 & 0.1743 \\
+JOINT-img & 0.4974 & 0.0632 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S18, referenced from main text, `Lesion-grounded explainability battery' (localisation ratios, in-box mass, entropy, pointing games).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Phase-6 plausibility against TN5000 expert boxes ($n{=}950$;
+all images boxed; localisation ratio $=$ in-box share $/$ box-area
+share; in-box mass $=$ share of the $\ell_1$-normalised explanation
+inside the box; hit $=$ argmax inside box (pointing game, descriptive);
+entropy normalised to the 384$^2$ canvas. Score-CAM computed on the
+pre-registered seeded $n{=}150$ subsample (top-64 channels by
+$|\alpha|$). All quantities computed once, seed 42, no refit.}
+\label{tab:phase6_plausibility}
+\begin{tabular}{lcccc}
+\toprule
+Explanation & loc.\ ratio mean (median) & in-box mass & pointing hit & norm.\ entropy \\
+\midrule
+R1p-ELA (grounded, exact)      & 41.63 (27.83) & 0.796 & 0.637 & 0.717 \\
+ERM Grad-CAM (layer4)          & 3.60 (4.44)   & 0.146 & 0.514 & 0.928 \\
+ERM Eigen-CAM                  & 4.68 (4.80)   & ---   & 0.736 & ---   \\
+ERM Score-CAM ($n{=}150$)      & 3.57 (3.57)   & ---   & 0.580 & ---   \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S19, referenced from main text, `Lesion-grounded explainability battery' (deletion/insertion areas incl. random-control mechanism).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Phase-6 faithfulness on TN5000-test (deletion/insertion under
+per-image blur $\sigma{=}8$, 8 steps, raw-raw probabilities, masks fixed
+post-fallback; gap $=$ trapezoid-area difference against the per-image
+seeded random-ordering control; insertion descriptive on the seeded
+$n{=}300$ subset). ThyUS-600 per-model curves are archived in
+\texttt{phase6\_panel\_thyus.npz}; the inferential external statement
+(K3) is in the main-text family-K table.}
+\label{tab:phase6_faithfulness}
+\begin{tabular}{lcccc}
+\toprule
+Model & del.\ AUC guided & del.\ AUC random & deletion gap & insertion gap ($n{=}300$) \\
+\midrule
+R1p       & 0.3334 & 0.4986 & 0.1652 & 0.0351 \\
+ERM       & 0.3315 & 0.5564 & 0.2249 & 0.2043 \\
+JOINT-g   & 0.3886 & 0.4908 & 0.1022 & 0.0356 \\
+JOINT-img & 0.4405 & 0.4815 & 0.0410 & 0.0144 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S20, referenced from main text, `Lesion-grounded explainability battery' (noise/affine stability rows).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Phase-6 stability under perturbation (mean / median Spearman
+against the unperturbed explanation; seeded 160-image probes per cell;
+pre-declared descriptive, non-gated).}
+\label{tab:phase6_stability}
+\begin{tabular}{llccc}
+\toprule
+Cohort & Model & Perturbation & mean $\rho$ & median $\rho$ \\
+\midrule
+TN5000-test & R1p & noise $\sigma{=}0.02$  & 0.9208 & 0.9972 \\
+TN5000-test & R1p & affine ($\pm 3^{\circ}$, $\pm 5$px) & 0.7713 & 0.8815 \\
+TN5000-test & ERM & noise $\sigma{=}0.02$  & 0.8317 & 0.8865 \\
+TN5000-test & ERM & affine ($\pm 3^{\circ}$, $\pm 5$px) & 0.8709 & 0.9245 \\
+ThyUS-600   & R1p & noise $\sigma{=}0.02$  & 0.7990 & 0.9782 \\
+ThyUS-600   & R1p & affine ($\pm 3^{\circ}$, $\pm 5$px) & 0.6402 & 0.7909 \\
+ThyUS-600   & ERM & noise $\sigma{=}0.02$  & 0.7545 & 0.7879 \\
+ThyUS-600   & ERM & affine ($\pm 3^{\circ}$, $\pm 5$px) & 0.8103 & 0.8574 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S21, referenced from main text, `Lesion-grounded explainability battery' (randomisation cascade stages).}
+
+\begin{table}[!ht]
+\centering\small
+\caption{Phase-6 randomisation cascade (mean Spearman between the
+original and randomised explanations over the seeded 160-image TN5000
+probe). Pre-registered self-gate $|\rho|{<}0.2$ at each model's final
+available stage: ERM \textbf{pass}, R1p \textbf{fail} --- reported as
+failed. The fc-only row shows shallow readout randomisation cannot reach
+the bar for either model; follow-up diagnostics (decision rules
+committed pre-run): resampled-vs-resampled floor 0.0920 (elevation of
+the retained correlation $+0.2072$ above floor), per-feature attribution
+decorrelation complete (Spearman $-0.0150$). Originals verified
+untouched by checksum.}
+\label{tab:phase6_cascade}
+\begin{tabular}{lccc}
+\toprule
+Stage & mean $|\rho|$ & mean $\rho$ & $n$ \\
+\midrule
+ERM fc                          & 0.2948 & $-0.0618$ & 160 \\
+ERM fc+layer4                   & 0.1492 & $+0.1287$ & 160 \\
+ERM fc+layer4+layer3 (final)    & 0.1205 & $-0.0135$ & 160 \\
+R1p head weights (final)        & 0.2991 & $+0.2982$ & 160 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{Table S22: family-K secondary/tertiary contrasts,
+relocated row-for-row from the main-text family-K table (referenced
+from main text, `Lesion-grounded explainability battery'). Conventions
+as in the main-text table (image-level paired bootstrap, 5{,}000
+resamples, seed 42; Bonferroni $\alpha{=}0.0125$; $p{=}0.0$ typeset
+$p{<}0.0004$).}
+
+\begin{table}[!ht]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Supplementary family-K secondary contrasts (relocated rows;
+locked values). ``YES (rev.)'' = significant in the
+pre-registered-opposite direction (see main text).}
+\label{tab:sm_familyk_sec}
+\begin{tabular}{llllccl}
+\toprule
+Test & Metric & A & B & $\Delta$(A$-$B) (95\% CI) & Sig. & Note \\
+\midrule
+K2 & deletion gap       & R1p     & ERM         & $-0.0598$ ($-0.0761..-0.0437$)  & YES (rev.) & faithfulness, TN5000 \\
+K3 & deletion gap       & R1p     & ERM         & $-0.0339$ ($-0.0511..-0.0171$)  & YES (rev.) & faithfulness, ThyUS-600 \\
+K4 & deletion gap       & JOINT-g & JOINT-img   & $+0.0613$ (0.0560..0.0667)      & YES & grounding, G3 mirror \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Narrative extracts preserved from the pre-compression main text}
+\label{sm:extracts}
+
+\emph{Sentences below are reproduced verbatim from the pre-compression
+main text wherever a reported detail has no other Supplementary home,
+so the compression removes nothing from the submission package.}
+\par
+\paragraph{From Material and Methods (architecture and preprocessing), verbatim.}
+The working resolution is $384\times384$; the prototype module uses levels
+$\{e_2, e_3, e_4\}$ (strides 8/16/32; 128/256/512 channels) and
+descriptors pool $\{e_3, e_4\}$. Images are letterboxed; masks share the
+geometric transform (nearest-neighbour) and are binarised at grey level
+$\geq 127$, selected by visual audit against $>0$ and $\geq 250$
+alternatives; inputs are ImageNet-normalised. Score maps are bilinearly
+resized to the stride-8 grid ($48\times48$) and stacked as $2L$ channels
+(fragment, equation region).
+
+\paragraph{From Material and Methods (episode and budget mechanics), verbatim.}
+Meta-training samples 300 episodes per epoch from the source pool,
+re-drawing $K_m$ uniformly from $\{1,5,10,20\}$ at every episode;
+validation uses 100 episodes and evaluation 200 per condition.
+Descriptors are L2-normalised, and per-class means over nested per-class
+draws from the training split ($K_c \in
+\{5,10,20,50,\allowbreak 200,\mathrm{all}\}$, 25 resamples per finite
+budget, fixed seed) are scored by the cosine margin, reported as mean
+$\pm$ standard deviation of test AUROC across draws; in-domain only.
+
+\paragraph{From Material and Methods (decision conventions), verbatim.}
+Four conventions were fixed after the paired-analysis audit: (1)
+thresholds and temperatures come from the source validation split only,
+frozen before any test or external evaluation; (2) the raw-raw
+convention never mixes raw-threshold binary decisions with calibrated
+probabilities (rank metrics are convention-invariant); (3) confidence
+intervals are case-level bootstrap, 2,000 resamples, percentile
+2.5/97.5; (4) externally, calibration metrics are descriptive only ---
+any deployment interpretation requires local recalibration, stated
+rather than performed.
+
+\paragraph{From Material and Methods / Introduction (dataset roster), composed verbatim.}
+TN-SCUI2020 provides class labels with delineations (dataset record in
+the main-text reference list); TN-SCUI2020 remains an optional extension
+pending authorised access.
+
+\paragraph{From Results (Phase 1), verbatim.}
+TTA effects are small and sign-mixed --- the largest shift is $+1.11$
+Dice points on TNUI-all, and DDTI moves slightly in the opposite
+direction --- and DDTI is visibly the harder masked cohort (sensitivity
+0.83, median HD95 roughly doubled), consistent with its lower zero-shot
+prototype scores. Best validation episodic Dice 0.7776 (epoch 13; early
+stop 21; 37.7 min).
+DDTI is the hardest masked cohort for both paradigms (supervised 0.7396;
+zero-shot 0.6782), consistent with its doubled boundary error (median
+HD95 ${\approx}22$ vs 10--11 px) and burned-in annotations.
+
+\paragraph{From Results (Phase 3b, error propagation), verbatim.}
+Error propagation is diffuse rather than confidence-localised: the
+oracle-minus-predicted AUROC gap is modest in the lowest-confidence
+quartiles, vanishes in Q3, and is descriptively largest in the
+\emph{highest}-confidence quartile ($+0.0589$), the mean gap
+($\approx$0.022) closely matching the global T3 contrast. Segmentation
+error therefore imposes a diffuse $\approx$2-point tax on grounded
+features, and there is no confidence-gated ``safe subgroup'' in which
+predicted masks are output-equivalent to oracle boxes.
+
+\paragraph{From Results (Phase 3, label-budget sweep), verbatim.}
+The class-prototype label-budget sweep ($K$ per class
+$\in \{5,10,20,50,200,\mathrm{all}\}$, 25 draws) carries the
+classification-side annotation-efficiency claim: grounding dominates the
+identical whole-image budget at every $K$ ($+0.046$ to $+0.096$ AUROC);
+R1p saturates by $K{=}50$ (0.6383 versus 0.6379 full-budget) and stays
+within 0.013--0.029 of the oracle, while R0 has not saturated even at
+$K{=}200$; and the ring is null-or-negative throughout (R2p $\leq$ R1p,
+R2g $\leq$ R1g at every $K$), corroborating the T4 null under a
+different head family. Absolute levels sit far below the linear heads
+(0.59--0.66 vs 0.85--0.91), as expected for a cosine prototype rule on
+frozen descriptors; the linear head remains the pre-declared primary
+classifier.
+
+\paragraph{From Results (Phase 4, external family and abstention), verbatim.}
+The primary external test is nominal only: on the single locked TNUI
+test+val pool JOINT-g exceeds ERM's sensitivity at the frozen operating
+point by 6.6 points (H1: $+0.0661$, 95\% CI 0.005..0.128, $p{=}0.033$,
+beyond the family bar; McNemar 86 vs 60). The rank test is a flat null
+(H3: $-0.011$, $p{=}0.858$), and H2 is significant: joint grounding
+transfers its operating point \emph{worse} than the frozen R1p by 5.3
+points of pooled sensitivity (H2: $-0.0534$, CI $-0.097..-0.010$,
+$p{=}0.011$). The joint segmenter travels adequately (external Dice
+0.674--0.765, empty-mask $\leq 0.3\%$), so the deficit lives in
+classification head-room, not mask collapse. JOINT-g had not saturated
+at the pre-registered 15-epoch cap (validation AUROC was still
+improving; the cap was not extended), so family-G magnitudes are
+conservative. Retaining the most-confident 70\% of TN5000-test cases
+lifts JOINT-g's sensitivity at spec90 from 0.564 to 0.840, and at 50\%
+coverage the curve reaches 0.874 in-domain and 0.897 on the external
+TNUI pool. The effect is referral-shaped, not accuracy-shaped:
+approximately 86--87\% of the frozen point's malignant misses sit inside
+the abstained lower-confidence half on both panels (261 of 302 misses
+in-domain; 132 of 152 on pooled TNUI). No threshold or temperature was
+re-estimated for these numbers (raw-raw; the validation-fitted
+$T{=}0.523$ supplies only the confidence margin).
+
+\paragraph{From Results (Phase 5, audit and cohort assembly), verbatim.}
+Label coverage was complete for Batch 1 (6{,}005/6{,}005) and
+near-complete for Batch 2 (2{,}495/2{,}503), giving an overall parse
+rate of 0.9991 (8{,}500/8{,}508); the surviving join matched the
+corpus's own image map exactly (5{,}893/5{,}893 Batch-1 stems). Assembly
+gave 842 cases (601 + 241), and conservative whole-case near-duplicate
+screening excluded three, leaving 839 cases and 8{,}465 images
+(598 + 241), of which 522 are malignant (prevalence 0.622, inside the
+$[0.20, 0.85]$ gate). Frozen-row integrity held exactly (ERM re-hit
+0.9401; the retrained R1p head reproduced 0.8889 against the locked
+0.8902, within the 0.002 integrity tolerance; both JOINT arms matched to
+$\leq 10^{-6}$, temperatures 0.523/0.200), and segmentation QC was
+healthy (empty masks on 10.9\% of images, 926/8{,}465; JOINT-g decoder
+3.5\% (293/8{,}465)). Mean predicted nodule areas were 4.1\% and 5.9\%
+of the frame respectively.
+
+\paragraph{From Results (Phase 5, collapse and calibration detail), verbatim.}
+Only ERM's interval clears 0.5 --- by eight thousandths. AUPRC spans
+0.608--0.666 against the 0.622 prevalence, and shift drops from source
+are 0.31--0.39 AUROC for every linear head and 0.39 for ERM (drop
+0.3921, the largest); even JOINT-img, modest in-domain (0.7207), loses
+0.24, and the first-list-image view shows the same pattern
+(0.481--0.533). Calibration does not travel either: source-fitted
+temperatures \emph{worsen} external ECE for five of six models
+(post-calibration ECE 0.26--0.31; only ERM improves, 0.2813 $\to$
+0.2145), and Brier scores (0.29--0.35) sit far above the source regime.
+In integers: of the 83 malignant cases R1p catches at the frozen point,
+ERM misses 77; of the 7 ERM catches, R1p misses 1 --- an eleven-fold
+relative advantage, and the external case-level replication of the
+internal operating-point result.
+
+\paragraph{From Results (Phase 6, integrity detail), verbatim.}
+The seeded ThyUS-600 first-image panel ($n{=}600$, 376 malignant) was
+drawn from the licensed 839-case cohort and triangulated: 522 malignant,
+8{,}465 images, prevalence 0.6222. Live probabilities reproduce the
+Phase-3/4 archives (ERM 0.9404 vs 0.9401; R1p 0.8889 vs 0.8889; JOINT
+arms to ${\leq}2.25{\times}10^{-5}$ max $|\Delta p|$ against the
+$10^{-4}$ gate), and the 32-image ELA exactness probe confirmed the
+closed-form logit decomposition (max deviation R0 $1.6{\times}10^{-6}$,
+R1p $2.9{\times}10^{-7}$, R2p $2.7{\times}10^{-7}$, JOINT-g
+$7.8{\times}10^{-8}$, JOINT-img $2.6{\times}10^{-8}$; gate $10^{-3}$).
+
+\paragraph{From Results (Phase 6, descriptives and faithfulness detail), verbatim.}
+R1p-ELA attains a localisation ratio of 41.6 (median 27.8) where
+Grad-CAM attains 3.6. The decomposition marks R1p's precision as
+segmenter-grade (79.6\% of attribution mass inside the box, normalised
+entropy 0.717) against ERM-family diffusion (in-box mass 0.146, entropy
+0.928). The pointing game cuts the other way descriptively (Eigen-CAM
+0.736 $>$ R1p 0.637 $>$ Score-CAM 0.580 $>$ Grad-CAM 0.514): where a
+diffuse map happens to peak inside the box it scores like a concentrated
+one; the ratio and in-box-mass statistics instead report where the
+\emph{bulk} of the explanation lies. Under shift, ERM's attention
+deserts the nodule: Grad-CAM's energy inside the frozen predicted mask
+falls from 0.1253 in-domain (${\approx}3.2\times$ the mask's area share)
+to 0.0549 on ThyUS-600 (${\approx}1.3\times$). The reversal is carried
+by the random-order control, not by the guided curves:
+explanation-guided deletion degrades both models essentially identically
+(areas 0.3334 vs 0.3315), while random deletion erodes the diffuse
+image-wide classifier more slowly (random-control areas 0.4986 vs
+0.5564). Insertion (descriptive, $n{=}300$) favours ERM (0.2043 vs
+0.0351) with the same proviso, compounded by the out-of-distribution
+nature of sharp-lesion-on-blur hybrids for a mask-conditioned head.
+
+\paragraph{From Results (Phase 6, joint ladder, stability, cascade diagnostics), verbatim.}
+The deletion-gap ladder rises monotonically with the degree of built-in
+grounding (JOINT-img 0.041 $<$ JOINT-g 0.102 $<$ R1p 0.165). Under
+intensity noise R1p-ELA is the more stable explanation in both domains
+(mean Spearman 0.921 vs 0.832 on TN5000; 0.799 vs 0.755 on ThyUS-600),
+while affine warps invert the ordering (0.771 vs 0.871; 0.640 vs
+0.810) --- the two rows are the same concentration geometry read in
+opposite directions. ERM decorrelates below the bar only at its deepest
+stage (0.1205), and at the matching shallow stage (fc only, 0.2948) it
+fails identically: a 0.2 threshold at readout depth is unattainable for
+either model, rather than evidence of explanation defect. Independent
+resampled heads correlate at only 0.0920 on the same images, so the
+retained 0.2991 sits $+0.2072$ above that floor: the pixel map is
+\emph{not} head-agnostic geometry. Meanwhile, the per-feature logit
+attribution decorrelates completely under head resampling (Spearman
+$-0.0150$, $|{-}|$ 0.0191; Pearson $-0.0016$).
+
+\paragraph{From Discussion (mechanism and referral), verbatim.}
+The parameter-free variant collapses to 0.47--0.57 Dice under zero-shot
+transfer, so the contribution sits in the decoder, not in
+nearest-prototype matching of the PANet kind. A small referral stream
+(${\approx}30$\% of cases) removes the majority of the frozen point's
+false negatives without touching a single parameter. The descriptives
+cohere: 79.6\% of the grounded map's mass lies inside the expert box
+versus 14.6\% for Grad-CAM. Committed diagnostics show the retention is
+neither head-agnostic geometry (random-vs-random floor 0.092; retained
+elevation $+0.2072$ above it) nor a broken explanation (per-feature
+attribution decorrelates completely).
+
+\paragraph{From Results (Phase 4, grounding signal), verbatim.}
+Under identical multi-task conditions the grounded head beats the
+whole-image head by 14.9 points (G3: $+0.1489$, CI 0.1136..0.1848).
+
+
+
+\end{document}

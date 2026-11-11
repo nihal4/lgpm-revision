@@ -1,5 +1,15 @@
+# large artifacts: fetched from Hugging Face by scripts/fetch_large_files.py
+artifacts/phase1/best_resnet34_seed42.pt
+artifacts/phase1/best_unet_resnet18_tn3k.pt
+artifacts/phase3/erm_resnet34_tn5000.pt
+artifacts/phase3/features_train.npz
+artifacts/phase4/joint_g_trunk.pt
+artifacts/phase4/joint_img_trunk.pt
+artifacts/phase5/phase5_bank_thyus2path.npz
+artifacts/phase6/phase6_montage_store.pkl
+
 __pycache__/
 *.pyc
+results/latest_run/
 revision_outputs/
-*.pt
-*.npz
+.DS_Store

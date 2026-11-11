@@ -1,0 +1,7 @@
+model,AUROC TN5000-test,AUROC TNUI-test,shift drop
+ERM,0.9401,0.5172,0.4229
+R0_image,0.8524,0.5791,0.2733
+R1p_lesion,0.8889,0.7119,0.177
+R2p_lesion_ring,0.8841,0.6776,0.2065
+R1g_gtmask,0.9096,0.8343,0.0752
+R2g_gtmask_ring,0.9031,0.8507,0.0524

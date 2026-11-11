@@ -1,0 +1,5 @@
+stage,mean |rho|,mean rho,n
+fc,0.2948,-0.0618,160
+fc+layer4,0.1492,0.1287,160
+fc+layer4+layer3,0.1205,-0.0135,160
+R1p head weights,0.2991,0.2982,160

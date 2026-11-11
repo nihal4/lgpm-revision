@@ -1,0 +1,7 @@
+cohort,coverage,retained,referred,retained_malignant,retained_benign,referred_malignant,referred_benign,misses_total,misses_remaining,misses_referred,misses_referred_pct,random_referral_misses_removed_mean,random_referral_95pct,sens_retained,spec_retained,false_pos_remaining,malignant_share_retained
+TNUI pool R1p,1.0,413,0,392,21,0,0,131,131,0,0.0,0.0,0-0,0.6658,0.5238,10,1.0
+TNUI pool R1p,0.9,372,41,354,18,38,3,131,103,28,21.4,12.9,8-18,0.709,0.4444,10,0.9031
+TNUI pool R1p,0.8,330,83,314,16,78,5,131,88,43,32.8,26.4,19-34,0.7197,0.4375,9,0.801
+TNUI pool R1p,0.7,289,124,275,14,117,7,131,71,60,45.8,39.3,31-48,0.7418,0.5,7,0.7015
+TNUI pool R1p,0.6,248,165,235,13,157,8,131,58,73,55.7,52.4,44-61,0.7532,0.5385,6,0.5995
+TNUI pool R1p,0.5,206,207,196,10,196,11,131,46,85,64.9,65.7,56-75,0.7653,0.5,5,0.5
