@@ -1,0 +1,7 @@
+map,mean_ratio,median_ratio,mean_inbox_share,pointing_hit
+Uniform predicted mask (= published K1 R1p),41.6266,27.8262,0.7965,
+R1p-ELA attribution energy,20.487,15.7036,0.5444,0.6368
+ERM Grad-CAM (published comparator),3.5995,4.444,0.146,0.5137
+Grad-CAM x predicted mask,24.4208,15.9452,0.6345,0.6116
+ERM Eigen-CAM,4.6788,4.7971,0.1716,
+Eigen-CAM x predicted mask,42.5044,28.8276,0.8101,

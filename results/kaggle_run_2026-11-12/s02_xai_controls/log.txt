@@ -1,0 +1,32 @@
+  [GATE OK]   Phase-3 run_summary found (/kaggle/working/lgpm-revision/artifacts/phase3/run_summary.json)
+panel: 950 TN5000-test images | (0.0 min)
+  [GATE OK]   fixed support episode reproduces the Phase-3 archive (20 ids)
+  16/950 (3.3 min)
+  176/950 (3.6 min)
+  336/950 (3.9 min)
+  496/950 (4.2 min)
+  656/950 (4.5 min)
+  816/950 (4.8 min)
+  [GATE OK]   predicted-mask areas match panel (max dev 0.00e+00)
+  [GATE OK]   uniform-mask in-box equals published K1 R1p column (max dev 0.00e+00)
+  [GATE OK]   Grad-CAM in-box matches panel (max dev 0.00e+00)
+  [GATE OK]   K1 means reproduced: uniform 41.63 (41.6), Grad-CAM 3.60 (3.6)
+  [GATE OK]   ELA pointing-game hits match panel
+
+                                         map  mean_ratio  median_ratio  mean_inbox_share  pointing_hit
+Uniform predicted mask (= published K1 R1p)     41.6266       27.8262            0.7965           NaN
+                 R1p-ELA attribution energy     20.4870       15.7036            0.5444        0.6368
+        ERM Grad-CAM (published comparator)      3.5995        4.4440            0.1460        0.5137
+                  Grad-CAM x predicted mask     24.4208       15.9452            0.6345        0.6116
+                              ERM Eigen-CAM      4.6788        4.7971            0.1716           NaN
+                 Eigen-CAM x predicted mask     42.5044       28.8276            0.8101           NaN
+  ELA maps with no positive mass: 41; masked Grad-CAM with no mass: 223
+
+Paired localisation-ratio contrasts (post-review, not pre-registered):
+                          A                                           B  delta_mean             CI95  p_two_sided
+R1p-ELA attribution energy         ERM Grad-CAM (published comparator)     16.8875   15.735..18.078          0.0
+R1p-ELA attribution energy Uniform predicted mask (= published K1 R1p)    -21.1396 -23.774..-18.629          0.0
+ Grad-CAM x predicted mask Uniform predicted mask (= published K1 R1p)    -17.2058 -20.143..-14.330          0.0
+R1p-ELA attribution energy                   Grad-CAM x predicted mask     -3.9338   -5.304..-2.576          0.0
+
+done in 5.1 min -> /kaggle/working/revision_outputs/s02_xai_controls

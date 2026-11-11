@@ -1,0 +1,15 @@
+DDTI root: /kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI True | XML roots: ['/kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI', '/kaggle/input/datasets/jonbon8397/tn3k-data', '/kaggle/input/datasets/dasmehdixtr/ddti-thyroid-ultrasound-images']
+XML files found: 390 | labelled stems: 298
+XML tags seen (count): {'mark': 480, 'image': 480, 'svg': 480, 'case': 390, 'number': 390, 'age': 390, 'sex': 390, 'composition': 390, 'echogenicity': 390, 'margins': 390, 'calcifications': 390, 'tirads': 390, 'reportbacaf': 390, 'reporteco': 390}
+  [GATE OK]   DDTI cohort rebuilt: n=189, malignant=145 (locked 189/145)
+
+How each final DDTI label was reached (cases):
+ decided_by  TI-RADS only
+label                   
+benign                44
+malignant            145
+
+Cases whose sources disagree (some vote against the final label): 0
+Series([], )
+
+-> /kaggle/working/revision_outputs/s04_ddti_label_profile

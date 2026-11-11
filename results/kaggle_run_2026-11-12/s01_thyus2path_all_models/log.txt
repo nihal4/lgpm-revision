@@ -1,0 +1,65 @@
+  bank         /kaggle/working/lgpm-revision/artifacts/phase5/phase5_bank_thyus2path.npz
+  manifest     /kaggle/working/lgpm-revision/artifacts/phase5/phase5_manifest_unique_cases.csv
+  heads        /kaggle/working/lgpm-revision/artifacts/phase3c/linear_heads_retrained.json
+  erm          /kaggle/working/lgpm-revision/artifacts/phase3/erm_resnet34_tn5000.pt
+  erm_probs    /kaggle/working/lgpm-revision/artifacts/phase3/erm_resnet34_probs.json
+  val          /kaggle/working/lgpm-revision/artifacts/phase3/features_val.npz
+  joint_g      /kaggle/working/lgpm-revision/artifacts/phase4/joint_g_trunk.pt
+  joint_img    /kaggle/working/lgpm-revision/artifacts/phase4/joint_img_trunk.pt
+  joint_probs  /kaggle/working/lgpm-revision/artifacts/phase4/phase4_joint_probs_tn5000.json
+ThyUS2Path root: /kaggle/input/datasets/jonbon8397/thyus2path
+images rebuilt: 8500 | bank rows: 8465 | images to exclude: 35
+  [GATE OK]   rebuilt manifest equals bank order (8465 images; excluded cases ['batch1_image:237', 'batch1_image:253', 'batch1_image:338'])
+  [GATE OK]   image labels equal bank labels
+  [GATE OK]   cohort is 839 cases / 522 malignant
+  scored 16/8465 images (0.2 min)
+  scored 1616/8465 images (2.7 min)
+  scored 3216/8465 images (5.2 min)
+  scored 4816/8465 images (7.6 min)
+  scored 6416/8465 images (10.3 min)
+  scored 8016/8465 images (13.7 min)
+  [GATE OK]   JOINT thresholds equal the archived Phase-4 values
+
+Reproduction of Table S15 (case level):
+  [GATE OK]   ERM              AUROC 0.5479 (locked 0.5479) | sens 0.0134 (locked 0.0134)
+  [GATE OK]   R0_image         AUROC 0.5400 (locked 0.54) | sens 0.0460 (locked 0.046)
+  [GATE OK]   R1p_lesion       AUROC 0.5081 (locked 0.5081) | sens 0.1590 (locked 0.159)
+  [GATE OK]   R2p_lesion_ring  AUROC 0.5211 (locked 0.5211) | sens 0.0881 (locked 0.0881)
+  [GATE OK]   JOINT-g          AUROC 0.5112 (locked 0.5112) | sens 0.0613 (locked 0.0613)
+  [GATE OK]   JOINT-img        AUROC 0.4780 (locked 0.478) | sens 0.0153 (locked 0.0153)
+
+ThyUS2Path case-level operating points (frozen source thresholds; nothing refitted):
+          model   n  malignant  benign  auroc  threshold   sens        sens_CI   spec        spec_CI  TP  FN  TN  FP  sens_minus_fpr sens_minus_fpr_CI    ppv
+            ERM 839        522     317 0.5479   0.923340 0.0134 0.0040..0.0234 0.9968 0.9899..1.0000   7 515 316   1          0.0103   -0.0008..0.0214 0.8750
+       R0_image 839        522     317 0.5400   0.666950 0.0460 0.0293..0.0645 0.9495 0.9251..0.9712  24 498 301  16         -0.0045   -0.0360..0.0243 0.6000
+     R1p_lesion 839        522     317 0.5081   0.543517 0.1590 0.1299..0.1928 0.8675 0.8282..0.9042  83 439 275  42          0.0265   -0.0238..0.0749 0.6640
+R2p_lesion_ring 839        522     317 0.5211   0.588488 0.0881 0.0642..0.1128 0.9148 0.8812..0.9439  46 476 290  27          0.0029   -0.0371..0.0421 0.6301
+        JOINT-g 839        522     317 0.5112   0.594399 0.0613 0.0417..0.0827 0.9495 0.9240..0.9719  32 490 301  16          0.0108   -0.0218..0.0421 0.6667
+      JOINT-img 839        522     317 0.4780   0.555843 0.0153 0.0058..0.0264 0.9874 0.9731..0.9970   8 514 313   4          0.0027   -0.0144..0.0175 0.6667
+
+McNemar R1p vs ERM: {
+ "J1_malignant (sensitivity)": {
+  "a_only": 77,
+  "b_only": 1,
+  "chi2_cc": 72.11538461538461,
+  "exact_p": 5.227781471335135e-22
+ },
+ "J1_benign (false positives; a_only = R1p FP not ERM)": {
+  "a_only": 42,
+  "b_only": 1,
+  "chi2_cc": 37.2093023255814,
+  "exact_p": 1.000444171950221e-11
+ }
+}
+
+POST HOC sensitivity at matched achieved specificity:
+specificity_of      ERM  JOINT-g  JOINT-img  R0_image  R1p_lesion  R2p_lesion_ring
+model                                                                             
+ERM              0.0172   0.0805     0.0326    0.0805      0.1897           0.1054
+JOINT-g          0.0038   0.0632     0.0077    0.0632      0.1743           0.0900
+JOINT-img        0.0077   0.0287     0.0096    0.0287      0.1054           0.0556
+R0_image         0.0057   0.0498     0.0057    0.0498      0.1303           0.0805
+R1p_lesion       0.0077   0.0441     0.0096    0.0441      0.1590           0.0920
+R2p_lesion_ring  0.0096   0.0575     0.0096    0.0575      0.1705           0.0881
+
+done in 14.7 min -> /kaggle/working/revision_outputs/s01_thyus2path_all_models

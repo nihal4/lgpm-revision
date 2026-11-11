@@ -1,0 +1,4 @@
+condition,n_episodes,A_fusion_K20,A_fusion_K20_CI,B_support_free,B_support_free_CI,C_phase1_unet,C_phase1_unet_CI,B_support_free_minus_A,B_support_free_minus_A_CI,B_support_free_minus_A_p,C_phase1_unet_minus_A,C_phase1_unet_minus_A_CI,C_phase1_unet_minus_A_p
+TN3K test | in-domain,200,0.7926,0.7843..0.8008,0.8444,0.8370..0.8515,0.8394,0.8319..0.8467,0.0518,0.0474..0.0564,0.0,0.0468,0.0422..0.0515,0.0
+TNUI test | zero-shot,200,0.7079,0.6977..0.7182,0.7558,0.7455..0.7656,0.7403,0.7302..0.7506,0.0479,0.0428..0.0526,0.0,0.0324,0.0271..0.0375,0.0
+DDTI | zero-shot,200,0.6782,0.6667..0.6893,0.7514,0.7418..0.7605,0.7465,0.7365..0.7557,0.0731,0.0662..0.0799,0.0,0.0682,0.0614..0.0748,0.0

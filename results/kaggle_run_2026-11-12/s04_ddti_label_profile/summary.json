@@ -1,0 +1,12 @@
+{
+ "n": 189,
+ "malignant": 145,
+ "profile": {
+  "TI-RADS only": {
+   "benign": 44,
+   "malignant": 145
+  }
+ },
+ "conflicts": 0,
+ "n_xml": 390
+}

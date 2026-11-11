@@ -1,0 +1,8 @@
+{
+ "source_training_masks": 2447,
+ "support_free_params": 8199,
+ "fusion_params": 6401,
+ "best_val_dice": 0.8280690346540415,
+ "best_epoch": 13,
+ "runtime": "39.2 min"
+}

@@ -1,0 +1,4 @@
+pool,n,support_free_dice,phase1_unet_dice,phase1_locked_S2
+TN3K test,614,0.8494,0.8441,0.8441
+TNUI test,138,0.7498,0.7367,0.7367
+DDTI,635,0.7473,0.7432,0.7431

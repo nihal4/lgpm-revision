@@ -1,0 +1,62 @@
+tn3k: /kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/tn3k | ddti: /kaggle/input/datasets/jonbon8397/tn3k-data/Thyroid Dataset/DDTI dataset/DDTI True | tnui: /kaggle/input/datasets/jonbon8397/tnui-2021/TNUI-2021-/thyroid_data
+  tn3k_train n=2447
+  tn3k_val   n=432
+  tn3k_test  n=614
+  tnui_test  n=138
+  ddti_all   n=635
+SOURCE SUPERVISION: TN3K internal-training masks = 2447 (Phase-1 encoder and both decoders)
+parameters: support-free decoder 8199 | fusion decoder 6401 (difference = the 1x1 projections)
+ep 01 | train dice 0.8025 | val dice 0.7992  * (7.6 min)
+ep 02 | train dice 0.8561 | val dice 0.8023  * (9.0 min)
+ep 03 | train dice 0.8659 | val dice 0.8088  * (10.4 min)
+ep 04 | train dice 0.8644 | val dice 0.8147  * (11.7 min)
+ep 05 | train dice 0.8634 | val dice 0.8151  * (13.0 min)
+ep 06 | train dice 0.8652 | val dice 0.8200  * (14.3 min)
+ep 07 | train dice 0.8626 | val dice 0.8159 (15.7 min)
+ep 08 | train dice 0.8623 | val dice 0.8162 (17.0 min)
+ep 09 | train dice 0.8682 | val dice 0.8143 (18.3 min)
+ep 10 | train dice 0.8693 | val dice 0.8210  * (19.6 min)
+ep 11 | train dice 0.8701 | val dice 0.8241  * (20.9 min)
+ep 12 | train dice 0.8671 | val dice 0.8174 (22.3 min)
+ep 13 | train dice 0.8713 | val dice 0.8281  * (23.6 min)
+ep 14 | train dice 0.8728 | val dice 0.8028 (24.9 min)
+ep 15 | train dice 0.8767 | val dice 0.8234 (26.2 min)
+ep 16 | train dice 0.8729 | val dice 0.8242 (27.5 min)
+ep 17 | train dice 0.8675 | val dice 0.8141 (28.8 min)
+ep 18 | train dice 0.8680 | val dice 0.8084 (30.1 min)
+ep 19 | train dice 0.8709 | val dice 0.8251 (31.4 min)
+ep 20 | train dice 0.8719 | val dice 0.8162 (32.7 min)
+ep 21 | train dice 0.8711 | val dice 0.8148 (34.0 min)
+best val Dice 0.8281 @ epoch 13 (Phase-2 fusion decoder: 0.7776 @ 13)
+  evaluated TN3K test | in-domain (35.6 min)
+  evaluated TNUI test | zero-shot (37.1 min)
+  evaluated DDTI | zero-shot (38.7 min)
+  [GATE OK]   TN3K test | in-domain: fusion K=20 Dice 0.7926 reproduces locked 0.7926
+  [GATE OK]   TNUI test | zero-shot: fusion K=20 Dice 0.7079 reproduces locked 0.7079
+  [GATE OK]   DDTI | zero-shot: fusion K=20 Dice 0.6782 reproduces locked 0.6782
+
+Episode-level Dice on identical queries (post-review, not pre-registered):
+                                                0                      1                 2
+condition                  TN3K test | in-domain  TNUI test | zero-shot  DDTI | zero-shot
+n_episodes                                   200                    200               200
+A_fusion_K20                              0.7926                 0.7079            0.6782
+A_fusion_K20_CI                   0.7843..0.8008         0.6977..0.7182    0.6667..0.6893
+B_support_free                            0.8444                 0.7558            0.7514
+B_support_free_CI                 0.8370..0.8515         0.7455..0.7656    0.7418..0.7605
+C_phase1_unet                             0.8394                 0.7403            0.7465
+C_phase1_unet_CI                  0.8319..0.8467         0.7302..0.7506    0.7365..0.7557
+B_support_free_minus_A                    0.0518                 0.0479            0.0731
+B_support_free_minus_A_CI         0.0474..0.0564         0.0428..0.0526    0.0662..0.0799
+B_support_free_minus_A_p                     0.0                    0.0               0.0
+C_phase1_unet_minus_A                     0.0468                 0.0324            0.0682
+C_phase1_unet_minus_A_CI          0.0422..0.0515         0.0271..0.0375    0.0614..0.0748
+C_phase1_unet_minus_A_p                      0.0                    0.0               0.0
+  [GATE OK] TN3K test: Phase-1 U-Net single-view 0.8441 (Table S2 0.8441)
+  [GATE OK] TNUI test: Phase-1 U-Net single-view 0.7367 (Table S2 0.7367)
+  [GATE OK] DDTI: Phase-1 U-Net single-view 0.7432 (Table S2 0.7431)
+     pool   n  support_free_dice  phase1_unet_dice  phase1_locked_S2
+TN3K test 614             0.8494            0.8441            0.8441
+TNUI test 138             0.7498            0.7367            0.7367
+     DDTI 635             0.7473            0.7432            0.7431
+
+done in 39.2 min -> /kaggle/working/revision_outputs/s03_support_free_decoder

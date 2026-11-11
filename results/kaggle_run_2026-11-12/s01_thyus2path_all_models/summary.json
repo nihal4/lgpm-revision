@@ -1,0 +1,31 @@
+{
+ "thresholds": {
+  "ERM": 0.92333984375,
+  "JOINT-g": 0.5943993926048279,
+  "JOINT-img": 0.5558434128761292,
+  "R0_image": 0.6669496893882751,
+  "R1p_lesion": 0.5435171127319336,
+  "R2p_lesion_ring": 0.588487982749939
+ },
+ "mcnemar": {
+  "J1_malignant (sensitivity)": {
+   "a_only": 77,
+   "b_only": 1,
+   "chi2_cc": 72.11538461538461,
+   "exact_p": 5.227781471335135e-22
+  },
+  "J1_benign (false positives; a_only = R1p FP not ERM)": {
+   "a_only": 42,
+   "b_only": 1,
+   "chi2_cc": 37.2093023255814,
+   "exact_p": 1.000444171950221e-11
+  }
+ },
+ "excluded_cases": [
+  "batch1_image:237",
+  "batch1_image:253",
+  "batch1_image:338"
+ ],
+ "n_cases": 839,
+ "n_images": 8465
+}

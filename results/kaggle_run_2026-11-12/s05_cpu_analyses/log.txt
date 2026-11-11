@@ -1,26 +1,26 @@
-  bank       /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz
-  cases      /tmp/kin/phase5_thyus2path/phase5_manifest_unique_cases.csv
-  heads3c    /tmp/kin/phase3-c/linear_heads_retrained.json
-  heads3     /tmp/kin/phase-3-classification/linear_heads_results.json
-  val        /tmp/kin/phase-3-classification/features_val.npz
-  train      /tmp/kin/phase-3-classification/features_train.npz
-  test       /tmp/kin/phase-3-classification/features_test.npz
-  tnui_test  /tmp/kin/phase3-c/features_tnui_test.npz
-  tnui_val   /tmp/kin/phase3d-external/features_tnui_val.npz
-  ddti       /tmp/kin/phase3e-external/features_tnui_ddti.npz
-  tnui_train /tmp/kin/phase3e-external/features_tnui_tnuitrain.npz
-  ext        /tmp/kin/phase4-joint/phase4_external_probs.json
-  joint      /tmp/kin/phase4-joint/phase4_joint_probs_tn5000.json
-  erm        /tmp/kin/phase-3-classification/erm_resnet34_probs.json
+  bank       /kaggle/working/lgpm-revision/artifacts/phase5/phase5_bank_thyus2path.npz
+  cases      /kaggle/working/lgpm-revision/artifacts/phase5/phase5_manifest_unique_cases.csv
+  heads3c    /kaggle/working/lgpm-revision/artifacts/phase3c/linear_heads_retrained.json
+  heads3     /kaggle/working/lgpm-revision/artifacts/phase3/linear_heads_results.json
+  val        /kaggle/working/lgpm-revision/artifacts/phase3/features_val.npz
+  train      /kaggle/working/lgpm-revision/artifacts/phase3/features_train.npz
+  test       /kaggle/working/lgpm-revision/artifacts/phase3/features_test.npz
+  tnui_test  /kaggle/working/lgpm-revision/artifacts/phase3c/features_tnui_test.npz
+  tnui_val   /kaggle/working/lgpm-revision/artifacts/phase3d/features_tnui_val.npz
+  ddti       /kaggle/working/lgpm-revision/artifacts/phase3e/features_tnui_ddti.npz
+  tnui_train /kaggle/working/lgpm-revision/artifacts/phase3e/features_tnui_tnuitrain.npz
+  ext        /kaggle/working/lgpm-revision/artifacts/phase4/phase4_external_probs.json
+  joint      /kaggle/working/lgpm-revision/artifacts/phase4/phase4_joint_probs_tn5000.json
+  erm        /kaggle/working/lgpm-revision/artifacts/phase3/erm_resnet34_probs.json
   [GATE OK]   TN5000 train/val/test features come from one folder
 
-$ /home/claude/lgpm-revision/scripts/cpu/map_cases.py /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz /tmp/kin/phase5_thyus2path/phase5_manifest_unique_cases.csv /tmp/kout/s05_cpu_analyses/thy_image_case_map.csv
+$ /kaggle/working/lgpm-revision/scripts/cpu/map_cases.py /kaggle/working/lgpm-revision/artifacts/phase5/phase5_bank_thyus2path.npz /kaggle/working/lgpm-revision/artifacts/phase5/phase5_manifest_unique_cases.csv /kaggle/working/revision_outputs/s05_cpu_analyses/thy_image_case_map.csv
 boundary at row 5970: batch1 5970 images, batch2 2495 images
 cases in bank: 839 (malignant 522); excluded vs manifest: 3 -> ['batch1_image:237', 'batch1_image:253', 'batch1_image:338']
 per-batch cases: {'batch1_image': 598, 'batch2_image': 241}
 
 
-$ /home/claude/lgpm-revision/scripts/cpu/a1_external_operating_points.py /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz /tmp/kout/s05_cpu_analyses/thy_image_case_map.csv /tmp/kin/phase3-c/linear_heads_retrained.json /tmp/kin/phase-3-classification/features_val.npz /tmp/kout/s05_cpu_analyses/a1
+$ /kaggle/working/lgpm-revision/scripts/cpu/a1_external_operating_points.py /kaggle/working/lgpm-revision/artifacts/phase5/phase5_bank_thyus2path.npz /kaggle/working/revision_outputs/s05_cpu_analyses/thy_image_case_map.csv /kaggle/working/lgpm-revision/artifacts/phase3c/linear_heads_retrained.json /kaggle/working/lgpm-revision/artifacts/phase3/features_val.npz /kaggle/working/revision_outputs/s05_cpu_analyses/a1
 ThyUS2Path cases 839 (malignant 522, benign 317)
           model  threshold_raw  val_sens  val_spec  auroc_case  ext_sens   ext_sens_CI  ext_spec   ext_spec_CI  TP  FN  TN  FP  flagged_positive  n_cases
        R0_image         0.6669    0.6389    0.9052      0.5400    0.0460 0.0290-0.0651    0.9495 0.9248-0.9716  24 498 301  16                40      839
@@ -38,7 +38,7 @@ R2p_lesion_ring    0.0575      0.1705           0.0881
   [GATE OK]   A1 R1p_lesion reproduces Table S15 (AUROC 0.5081, sens 0.159)
   [GATE OK]   A1 R2p_lesion_ring reproduces Table S15 (AUROC 0.5211, sens 0.0881)
 
-$ /home/claude/lgpm-revision/scripts/cpu/a1b_tnui_operating_points.py /tmp/kin/phase4-joint/phase4_external_probs.json /tmp/kin/phase4-joint/phase4_joint_probs_tn5000.json /tmp/kin/phase-3-classification/erm_resnet34_probs.json /tmp/kin/phase3-c/linear_heads_retrained.json /tmp/kin/phase-3-classification/features_val.npz /tmp/kin/phase3-c/features_tnui_test.npz /tmp/kin/phase3d-external/features_tnui_val.npz /tmp/kout/s05_cpu_analyses/a1b
+$ /kaggle/working/lgpm-revision/scripts/cpu/a1b_tnui_operating_points.py /kaggle/working/lgpm-revision/artifacts/phase4/phase4_external_probs.json /kaggle/working/lgpm-revision/artifacts/phase4/phase4_joint_probs_tn5000.json /kaggle/working/lgpm-revision/artifacts/phase3/erm_resnet34_probs.json /kaggle/working/lgpm-revision/artifacts/phase3c/linear_heads_retrained.json /kaggle/working/lgpm-revision/artifacts/phase3/features_val.npz /kaggle/working/lgpm-revision/artifacts/phase3c/features_tnui_test.npz /kaggle/working/lgpm-revision/artifacts/phase3d/features_tnui_val.npz /kaggle/working/revision_outputs/s05_cpu_analyses/a1b
 thresholds: {'JOINTg': 0.5944, 'JOINTimg': 0.5558, 'ERM': 0.9233, 'R1p': 0.5435}
    cohort    model   n  benign  auroc   sens   spec     spec_CI  TP  FN  TN  FP  sens_minus_fpr
 TNUI-test      ERM 139       5 0.5172 0.5373 0.6000 0.000-1.000  72  62   3   2          0.1373
@@ -60,7 +60,7 @@ TNUI pool JOINTimg 413      21 0.5556 0.1403 0.8571 0.692-1.000  55 337  18   3 
   [GATE OK]   A1b TNUI pool R1p sens 0.6658 (locked 0.6658)
   [GATE OK]   A1b TNUI pool ERM sens 0.5459 (locked 0.5459)
 
-$ /home/claude/lgpm-revision/scripts/cpu/a1c_ddti_tnuitrain_operating_points.py /tmp/kin/phase4-joint/phase4_external_probs.json /tmp/kout/s05_cpu_analyses/a1b/a1b_thresholds.json /tmp/kin/phase3e-external/features_tnui_ddti.npz /tmp/kin/phase3e-external/features_tnui_tnuitrain.npz /tmp/kout/s05_cpu_analyses/a1c
+$ /kaggle/working/lgpm-revision/scripts/cpu/a1c_ddti_tnuitrain_operating_points.py /kaggle/working/lgpm-revision/artifacts/phase4/phase4_external_probs.json /kaggle/working/revision_outputs/s05_cpu_analyses/a1b/a1b_thresholds.json /kaggle/working/lgpm-revision/artifacts/phase3e/features_tnui_ddti.npz /kaggle/working/lgpm-revision/artifacts/phase3e/features_tnui_tnuitrain.npz /kaggle/working/revision_outputs/s05_cpu_analyses/a1c
     cohort    model   n  benign  auroc   sens   spec     spec_CI  TP  FN  TN  FP  sens_minus_fpr
       DDTI      ERM 189      44 0.4746 0.4828 0.4545 0.304-0.600  70  75  20  24         -0.0627
       DDTI      R1p 189      44 0.4967 0.3379 0.7045 0.564-0.840  49  96  31  13          0.0425
@@ -75,7 +75,7 @@ TNUI-train JOINTimg 966      51 0.5270 0.1574 0.8627 0.762-0.954 144 771  44   7
   [GATE OK]   A1c DDTI R1p sens 0.3379 (locked 0.3379)
   [GATE OK]   A1c TNUI-train R1p sens 0.6776 (locked 0.6776)
 
-$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test JOINT-g /tmp/kout/s05_cpu_analyses/a3/y_test.npy /tmp/kout/s05_cpu_analyses/a3/p_jg_test.npy 0.5943993926048279 0.5234472415475986 /tmp/kout/s05_cpu_analyses/a3/a3_tn5000_jointg.csv
+$ /kaggle/working/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test JOINT-g /kaggle/working/revision_outputs/s05_cpu_analyses/a3/y_test.npy /kaggle/working/revision_outputs/s05_cpu_analyses/a3/p_jg_test.npy 0.5943993926048279 0.5234472415475986 /kaggle/working/revision_outputs/s05_cpu_analyses/a3/a3_tn5000_jointg.csv
 == TN5000-test JOINT-g: n=950, malignant=693, benign=257, thr=0.5944, T=0.5234
  coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
       1.0       950         0                 693              257                   0                0           302               302                0                  0.0                                  0.0                   0-0         0.5642         0.9105                   23                    1.0000
@@ -86,7 +86,7 @@ $ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test JOI
       0.5       475       475                 325              150                 368              107           302                41              261                 86.4                                151.3               137-166         0.8738         0.9200                   12                    0.4690
 
 
-$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test R1p /tmp/kout/s05_cpu_analyses/a3/y_test.npy /tmp/kout/s05_cpu_analyses/a3/p_r1p_test.npy 0.5322940945625305 0.8473908477378832 /tmp/kout/s05_cpu_analyses/a3/a3_tn5000_r1p.csv
+$ /kaggle/working/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test R1p /kaggle/working/revision_outputs/s05_cpu_analyses/a3/y_test.npy /kaggle/working/revision_outputs/s05_cpu_analyses/a3/p_r1p_test.npy 0.5322940945625305 0.8473908477378832 /kaggle/working/revision_outputs/s05_cpu_analyses/a3/a3_tn5000_r1p.csv
 == TN5000-test R1p: n=950, malignant=693, benign=257, thr=0.5323, T=0.8474
  coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
       1.0       950         0                 693              257                   0                0           189               189                0                  0.0                                  0.0                   0-0         0.7273         0.8755                   32                    1.0000
@@ -97,7 +97,7 @@ $ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TN5000-test R1p
       0.5       475       475                 315              160                 378               97           189                45              144                 76.2                                 94.6                83-107         0.8571         0.9500                    8                    0.4545
 
 
-$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool JOINT-g /tmp/kout/s05_cpu_analyses/a1b/y_tnui_pool.npy /tmp/kout/s05_cpu_analyses/a1b/p_jointg_tnui_pool.npy 0.5943993926048279 0.5234472415475986 /tmp/kout/s05_cpu_analyses/a3/a3_tnui_pool_jointg.csv
+$ /kaggle/working/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool JOINT-g /kaggle/working/revision_outputs/s05_cpu_analyses/a1b/y_tnui_pool.npy /kaggle/working/revision_outputs/s05_cpu_analyses/a1b/p_jointg_tnui_pool.npy 0.5943993926048279 0.5234472415475986 /kaggle/working/revision_outputs/s05_cpu_analyses/a3/a3_tnui_pool_jointg.csv
 == TNUI pool JOINT-g: n=413, malignant=392, benign=21, thr=0.5944, T=0.5234
  coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
       1.0       413         0                 392               21                   0                0           152               152                0                  0.0                                  0.0                   0-0         0.6122         0.5238                   10                    1.0000
@@ -108,7 +108,7 @@ $ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool JOINT
       0.5       206       207                 195               11                 197               10           152                20              132                 86.8                                 76.3                 67-86         0.8974         0.3636                    7                    0.4974
 
 
-$ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool R1p /tmp/kout/s05_cpu_analyses/a1b/y_tnui_pool.npy /tmp/kout/s05_cpu_analyses/a1b/p_r1p_tnui_pool.npy 0.5435171127319336 0.8473908477378832 /tmp/kout/s05_cpu_analyses/a3/a3_tnui_pool_r1p.csv
+$ /kaggle/working/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool R1p /kaggle/working/revision_outputs/s05_cpu_analyses/a1b/y_tnui_pool.npy /kaggle/working/revision_outputs/s05_cpu_analyses/a1b/p_r1p_tnui_pool.npy 0.5435171127319336 0.8473908477378832 /kaggle/working/revision_outputs/s05_cpu_analyses/a3/a3_tnui_pool_r1p.csv
 == TNUI pool R1p: n=413, malignant=392, benign=21, thr=0.5435, T=0.8474
  coverage  retained  referred  retained_malignant  retained_benign  referred_malignant  referred_benign  misses_total  misses_remaining  misses_referred  misses_referred_pct  random_referral_misses_removed_mean random_referral_95pct  sens_retained  spec_retained  false_pos_remaining  malignant_share_retained
       1.0       413         0                 392               21                   0                0           131               131                0                  0.0                                  0.0                   0-0         0.6658         0.5238                   10                    1.0000
@@ -121,7 +121,7 @@ $ /home/claude/lgpm-revision/scripts/cpu/a3_referral_workload.py TNUI pool R1p /
   [GATE OK]   A3 reproduces Table S14 (TN5000)
   [GATE OK]   A3 reproduces Table S14 (TNUI pool)
 
-$ /home/claude/lgpm-revision/scripts/cpu/x2_head_replicates.py /tmp/kin/phase-3-classification /tmp/kin/phase5_thyus2path/phase5_bank_thyus2path.npz /tmp/kout/s05_cpu_analyses/thy_image_case_map.csv 20 /tmp/kout/s05_cpu_analyses/x2
+$ /kaggle/working/lgpm-revision/scripts/cpu/x2_head_replicates.py /kaggle/working/lgpm-revision/artifacts/phase3 /kaggle/working/lgpm-revision/artifacts/phase5/phase5_bank_thyus2path.npz /kaggle/working/revision_outputs/s05_cpu_analyses/thy_image_case_map.csv 20 /kaggle/working/revision_outputs/s05_cpu_analyses/x2
 n seed  0: test AUROC 0.8914 | ThyUS2Path AUROC 0.5096 sens 0.155 spec 0.858 sens-FPR +0.013
 R1p_lesion seed  1: test AUROC 0.8916 | ThyUS2Path AUROC 0.5109 sens 0.159 spec 0.864 sens-FPR +0.023
 R1p_lesion seed  2: test AUROC 0.8940 | ThyUS2Path AUROC 0.5169 sens 0.192 spec 0.833 sens-FPR +0.024
@@ -206,4 +206,4 @@ thy_sens_minus_fpr count   20.0000     20.0000
                    max     -0.0058      0.0332
 
 
-all CPU analyses done -> /tmp/kout/s05_cpu_analyses
+all CPU analyses done -> /kaggle/working/revision_outputs/s05_cpu_analyses

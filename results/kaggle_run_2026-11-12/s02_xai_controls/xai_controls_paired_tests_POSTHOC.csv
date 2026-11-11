@@ -1,0 +1,5 @@
+A,B,delta_mean,CI95,p_two_sided
+R1p-ELA attribution energy,ERM Grad-CAM (published comparator),16.8875,15.735..18.078,0.0
+R1p-ELA attribution energy,Uniform predicted mask (= published K1 R1p),-21.1396,-23.774..-18.629,0.0
+Grad-CAM x predicted mask,Uniform predicted mask (= published K1 R1p),-17.2058,-20.143..-14.330,0.0
+R1p-ELA attribution energy,Grad-CAM x predicted mask,-3.9338,-5.304..-2.576,0.0
